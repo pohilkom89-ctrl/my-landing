@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сравнение фонов</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #0d0d14; color: #f0f0f8; }
+
+  .section {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .section canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 24px;
+    max-width: 640px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(108,99,255,0.18);
+    border: 1px solid rgba(108,99,255,0.45);
+    border-radius: 100px;
+    padding: 7px 22px;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #a78bfa;
+    margin-bottom: 28px;
+  }
+
+  .content h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.9);
+  }
+
+  .content p {
+    font-size: 1.05rem;
+    color: #8888aa;
+    margin-bottom: 32px;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.9);
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 14px 32px;
+    background: #6c63ff;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(108,99,255,0.35);
+  }
+
+  .divider {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, rgba(108,99,255,0.55), transparent);
+    z-index: 3;
+  }
+
+  /* overlay per section for readability */
+  .s1::before { content:''; position:absolute; inset:0; background:rgba(13,13,20,0.25); z-index:1; }
+  .s3::before { content:''; position:absolute; inset:0; background:rgba(13,13,20,0.35); z-index:1; }
+  .s4::before { content:''; position:absolute; inset:0; background:rgba(13,13,20,0.50); z-index:1; }
+  .s5::before { content:''; position:absolute; inset:0; background:rgba(13,13,20,0.30); z-index:1; }
+  .s8::before { content:''; position:absolute; inset:0; background:rgba(13,13,20,0.20); z-index:1; }
+
+  /* nav */
+  .nav {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 100;
+  }
+  .nav a {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: block;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .nav a:hover { background: #a78bfa; transform: scale(1.4); }
+
+  /* top labels */
+  .num {
+    position: absolute;
+    top: 28px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    z-index: 3;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#s1" title="Нейросеть"></a>
+  <a href="#s2" title="Аврора"></a>
+  <a href="#s3" title="Синтвейв"></a>
+  <a href="#s4" title="Матрица"></a>
+  <a href="#s5" title="Топография"></a>
+  <a href="#s6" title="Варп"></a>
+  <a href="#s7" title="Hex-пульс"></a>
+  <a href="#s8" title="Частицы + мышь"></a>
+</nav>
+
+<!-- ── 1. НЕЙРОСЕТЬ ── -->
+<section class="section s1" id="s1">
+  <canvas id="c1"></canvas>
+  <span class="num">01 / 08</span>
+  <div class="content">
+    <div class="badge">Вариант 1 — Нейросеть</div>
+    <h2>Сделаю Telegram-бота, сайт<br>или ИИ-помощника — под ключ</h2>
+    <p>Цифровые продукты под ключ. Быстро, надёжно, с поддержкой.</p>
+    <a class="btn" href="#">Обсудить проект</a>
+  </div>
+  <div class="divider"></div>
+</section>
+
+<!-- ── 2. АВРОРА ── -->
+<section class="section s2" id="s2">
+  <canvas id="c2"></canvas>
+  <span class="num">02 / 08</span>
+  <div class="content">
+    <div class="badge">Вариант 2 — Аврора</div>
+    <h2>Сделаю Telegram-бота, сайт<br>или ИИ-помощника — под ключ</h2>
+    <p>Цифровые продукты под ключ. Быстро, надёжно, с поддержкой.</p>
+    <a class="btn" href="#">Обсудить проект</a>
+  </div>
+  <div class="divider"></div>
+</section>
+
+<!-- ── 3. СИНТВЕЙВ ── -->
+<section class="section s3" id="s3">
+  <canvas id="c3"></canvas>
+  <span class="num">03 / 08</span>
+  <div class="content">
+    <div class="badge">Вариант 3 — Синтвейв</div>
+    <h2>Сделаю Telegram-бота, сайт<br>или ИИ-помощника — под ключ</h2>
+    <p>Цифровые продукты под ключ. Быстро, надёжно, с поддержкой.</p>
+    <a class="btn" href="#">Обсудить проект</a>
+  </div>
+  <div class="divider"></div>
+</section>
+
+<!-- ── 4. МАТРИЦА ── -->
+<section class="section s4" id="s4">
+  <canvas id="c4"></canvas>
+  <span class="num">04 / 08</span>
+  <div class="content">
+    <div class="badge">Вариант 4 — Матрица</div>
+    <h2>Сделаю Telegram-бота, сайт<br>или ИИ-помощника — под ключ</h2>
+    <p>Цифровые продукты под ключ. Быстро, надёжно, с поддержкой.</p>
+    <a class="btn" href="#">Обсудить проект</a>
+  </div>
+  <div class="divider"></div>
+</section>
+
+<!-- ── 5. ТОПОГРАФИЯ ── -->
+<section class="section s5" id="s5">
+  <canvas id="c5"></canvas>
+  <span class="num">05 / 08</span>
+  <div class="content">
+    <div class="badge">Вариант 5 — Топография</div>
+    <h2>Сделаю Telegram-бота, сайт<br>или ИИ-помощника — под ключ</h2>
+    <p>Цифровые продукты под ключ. Быстро, надёжно, с поддержкой.</p>
+    <a class="btn" href="#">Обсудить проект</a>
+  </div>
+  <div class="divider"></div>
+</section>
+
+<!-- ── 6. ВАРП ── -->
+<section class="section s6" id="s6">
+  <canvas id="c6"></canvas>
+  <span class="num">06 / 08</span>
+  <div class="content">
+    <div class="badge">Вариант 6 — Варп / Гиперпространство</div>
+    <h2>Сделаю Telegram-бота, сайт<br>или ИИ-помощника — под ключ</h2>
+    <p>Цифровые продукты под ключ. Быстро, надёжно, с поддержкой.</p>
+    <a class="btn" href="#">Обсудить проект</a>
+  </div>
+  <div class="divider"></div>
+</section>
+
+<!-- ── 7. HEX-ПУЛЬС ── -->
+<section class="section s7" id="s7">
+  <canvas id="c7"></canvas>
+  <span class="num">07 / 08</span>
+  <div class="content">
+    <div class="badge">Вариант 7 — Hex-пульс</div>
+    <h2>Сделаю Telegram-бота, сайт<br>или ИИ-помощника — под ключ</h2>
+    <p>Цифровые продукты под ключ. Быстро, надёжно, с поддержкой.</p>
+    <a class="btn" href="#">Обсудить проект</a>
+  </div>
+  <div class="divider"></div>
+</section>
+
+<!-- ── 8. ЧАСТИЦЫ + МЫШЬ ── -->
+<section class="section s8" id="s8">
+  <canvas id="c8"></canvas>
+  <span class="num">08 / 08</span>
+  <div class="content">
+    <div class="badge">Вариант 8 — Частицы + мышь</div>
+    <h2>Сделаю Telegram-бота, сайт<br>или ИИ-помощника — под ключ</h2>
+    <p>Цифровые продукты под ключ. Быстро, надёжно, с поддержкой.</p>
+    <a class="btn" href="#">Обсудить проект</a>
+  </div>
+</section>
+
+<script>
+// ─── 1. НЕЙРОСЕТЬ ───────────────────────────────────────────
+(function() {
+  const cv = document.getElementById('c1');
+  const cx = cv.getContext('2d');
+  const COUNT = 70, MAX_D = 160;
+  let pts = [];
+
+  function resize() {
+    cv.width = cv.offsetWidth; cv.height = cv.offsetHeight;
+    pts = Array.from({length: COUNT}, () => ({
+      x: Math.random() * cv.width,  y: Math.random() * cv.height,
+      vx:(Math.random()-0.5)*0.4,  vy:(Math.random()-0.5)*0.4,
+      r: Math.random()*1.5+1
+    }));
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  setInterval(function() {
+    cx.fillStyle = '#0d0d14';
+    cx.fillRect(0,0,cv.width,cv.height);
+    for (const p of pts) {
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=cv.width; if(p.x>cv.width)p.x=0;
+      if(p.y<0)p.y=cv.height; if(p.y>cv.height)p.y=0;
+    }
+    for (let i=0;i<pts.length;i++) {
+      for (let j=i+1;j<pts.length;j++) {
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<MAX_D) {
+          cx.beginPath(); cx.moveTo(pts[i].x,pts[i].y); cx.lineTo(pts[j].x,pts[j].y);
+          cx.strokeStyle=`rgba(108,99,255,${(1-d/MAX_D)*0.55})`; cx.lineWidth=0.8; cx.stroke();
+        }
+      }
+    }
+    cx.shadowBlur=9; cx.shadowColor='#a78bfa';
+    for (const p of pts) {
+      cx.beginPath(); cx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      cx.fillStyle='rgba(167,139,250,0.9)'; cx.fill();
+    }
+    cx.shadowBlur=0;
+  }, 33);
+})();
+
+// ─── 2. АВРОРА ───────────────────────────────────────────────
+(function() {
+  const cv = document.getElementById('c2');
+  const cx = cv.getContext('2d');
+  let W, H, t=0;
+
+  const orbs = [
+    {cx:.20,cy:.25,ax:.18,ay:.14,ph:0.00,sp:.00031,r:.50,c:'108,99,255', a:.20},
+    {cx:.75,cy:.20,ax:.15,ay:.20,ph:1.30,sp:.00025,r:.45,c:'79,70,229',  a:.17},
+    {cx:.50,cy:.60,ax:.22,ay:.16,ph:2.60,sp:.00028,r:.55,c:'167,139,250',a:.15},
+    {cx:.85,cy:.70,ax:.12,ay:.18,ph:4.00,sp:.00022,r:.40,c:'124,58,237', a:.16},
+    {cx:.10,cy:.75,ax:.14,ay:.12,ph:5.20,sp:.00034,r:.42,c:'37,99,235',  a:.14},
+    {cx:.60,cy:.10,ax:.20,ay:.10,ph:3.50,sp:.00019,r:.38,c:'139,92,246', a:.13},
+  ];
+
+  function resize() { W=cv.width=cv.offsetWidth; H=cv.height=cv.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  setInterval(function() {
+    t++;
+    cx.fillStyle='#0d0d14'; cx.fillRect(0,0,W,H);
+    for (const o of orbs) {
+      const x=(o.cx+Math.sin(t*o.sp*1000+o.ph)*o.ax)*W;
+      const y=(o.cy+Math.cos(t*o.sp*730 +o.ph)*o.ay)*H;
+      const r=o.r*Math.min(W,H);
+      const g=cx.createRadialGradient(x,y,0,x,y,r);
+      g.addColorStop(0,  `rgba(${o.c},${o.a})`);
+      g.addColorStop(.5, `rgba(${o.c},${o.a*.4})`);
+      g.addColorStop(1,  `rgba(${o.c},0)`);
+      cx.fillStyle=g; cx.fillRect(0,0,W,H);
+    }
+  }, 33);
+})();
+
+// ─── 3. СИНТВЕЙВ ─────────────────────────────────────────────
+(function() {
+  const cv = document.getElementById('c3');
+  const cx = cv.getContext('2d');
+  let W, H, t=0;
+
+  function resize() { W=cv.width=cv.offsetWidth; H=cv.height=cv.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  setInterval(function() {
+    t += 0.6;
+    cx.fillStyle='#0d0d14'; cx.fillRect(0,0,W,H);
+
+    const hz = H * 0.50;
+    const spd = (t % 100) / 100;
+
+    // горизонтальное свечение у горизонта
+    const hg = cx.createLinearGradient(0, hz-80, 0, hz+50);
+    hg.addColorStop(0,   'rgba(108,99,255,0)');
+    hg.addColorStop(0.5, 'rgba(108,99,255,0.20)');
+    hg.addColorStop(1,   'rgba(167,139,250,0.04)');
+    cx.fillStyle=hg; cx.fillRect(0, hz-80, W, 130);
+
+    // солнце
+    const sg = cx.createRadialGradient(W/2, hz, 0, W/2, hz, 95);
+    sg.addColorStop(0,   'rgba(167,139,250,0.95)');
+    sg.addColorStop(0.4, 'rgba(108,99,255,0.55)');
+    sg.addColorStop(1,   'rgba(108,99,255,0)');
+    cx.fillStyle=sg; cx.beginPath(); cx.arc(W/2, hz, 95, 0, Math.PI*2); cx.fill();
+
+    // горизонтальные линии пола
+    cx.save();
+    for (let i=0; i<=20; i++) {
+      const p = (i/20 + spd) % 1;
+      const y = hz + Math.pow(p, 2.2) * (H - hz);
+      const a = Math.min(p * 2.8, 0.6);
+      cx.beginPath(); cx.moveTo(0,y); cx.lineTo(W,y);
+      cx.strokeStyle=`rgba(108,99,255,${a})`; cx.lineWidth=0.9; cx.stroke();
+    }
+    cx.restore();
+
+    // вертикальные линии перспективы
+    cx.save();
+    for (let i=0; i<=16; i++) {
+      const f=i/16;
+      const xT = W/2 + (f-0.5)*90;
+      const xB = f*W;
+      cx.beginPath(); cx.moveTo(xT, hz); cx.lineTo(xB, H);
+      cx.strokeStyle='rgba(108,99,255,0.38)'; cx.lineWidth=0.8; cx.stroke();
+    }
+    cx.restore();
+
+    // звёзды (стабильные)
+    for (let i=0; i<70; i++) {
+      const sx = ((i*137+23)%97)/97*W;
+      const sy = ((i*53 +11)%73)/73*(hz*0.88);
+      const sr = ((i*31 +7) %5) /5*1.3+0.3;
+      cx.beginPath(); cx.arc(sx,sy,sr,0,Math.PI*2);
+      cx.fillStyle='rgba(167,139,250,0.65)'; cx.fill();
+    }
+  }, 33);
+})();
+
+// ─── 4. МАТРИЦА ──────────────────────────────────────────────
+(function() {
+  const cv = document.getElementById('c4');
+  const cx = cv.getContext('2d');
+  const CHARS = 'POHILKOMIHAIL';
+  const FS = 16;
+  let W, H, cols, drops;
+
+  function resize() {
+    W=cv.width=cv.offsetWidth; H=cv.height=cv.offsetHeight;
+    cols = Math.floor(W/FS);
+    drops = Array.from({length:cols}, () => Math.random()*-60);
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  setInterval(function() {
+    cx.fillStyle='rgba(13,13,20,0.05)'; cx.fillRect(0,0,W,H);
+    cx.font = FS+'px monospace';
+    for (let i=0; i<cols; i++) {
+      const ch = CHARS[Math.floor(Math.random()*CHARS.length)];
+      const x = i*FS, y = drops[i]*FS;
+      const prog = y/H;
+      if (prog < 0.5) {
+        cx.fillStyle=`rgba(167,139,250,${Math.max(0,prog*2)*0.9})`;
+        cx.fillText(ch, x, y);
+      }
+      drops[i]++;
+      if (y > H && Math.random() > 0.975) drops[i]=0;
+    }
+  }, 50);
+})();
+
+// ─── 5. ТОПОГРАФИЯ ───────────────────────────────────────────
+// Анимированные контурные линии как у Stripe
+(function() {
+  const cv = document.getElementById('c5');
+  const cx = cv.getContext('2d');
+  let W, H, t = 0;
+
+  function resize() { W=cv.width=cv.offsetWidth; H=cv.height=cv.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  // Perlin-like noise через summed sines
+  function noise(x, y, z) {
+    return Math.sin(x*1.3 + z)       * 0.4
+         + Math.sin(y*1.1 + z*1.3)   * 0.3
+         + Math.sin((x+y)*0.7 + z*0.7)*0.2
+         + Math.sin(x*2.3 + y*1.7 + z)*0.1;
+  }
+
+  setInterval(function() {
+    t += 0.008;
+    cx.fillStyle = '#0d0d14';
+    cx.fillRect(0, 0, W, H);
+
+    const LEVELS = 12;
+    const STEP = 14;
+    for (let lv = 0; lv < LEVELS; lv++) {
+      const threshold = -1 + (lv / LEVELS) * 2;
+      const alpha = 0.08 + (lv / LEVELS) * 0.22;
+      const hue = lv / LEVELS; // 0..1
+      const r = Math.round(79  + hue * (167 - 79));
+      const g = Math.round(70  + hue * (139 - 70));
+      const b = Math.round(229 + hue * (250 - 229));
+
+      cx.beginPath();
+      // marching squares — упрощённо: рисуем contour как набор сегментов
+      for (let px = 0; px < W - STEP; px += STEP) {
+        for (let py = 0; py < H - STEP; py += STEP) {
+          const x0 = px/W*3, y0 = py/H*3;
+          const x1 = (px+STEP)/W*3, y1 = (py+STEP)/H*3;
+          const v00 = noise(x0, y0, t);
+          const v10 = noise(x1, y0, t);
+          const v01 = noise(x0, y1, t);
+          const v11 = noise(x1, y1, t);
+
+          // линия от левого ребра до верхнего
+          if ((v00 > threshold) !== (v10 > threshold)) {
+            const tx = (threshold - v00) / (v10 - v00);
+            const fx = px + tx * STEP, fy = py;
+            if ((v00 > threshold) !== (v01 > threshold)) {
+              const ty = (threshold - v00) / (v01 - v00);
+              cx.moveTo(fx, fy);
+              cx.lineTo(px, py + ty * STEP);
+            }
+          }
+          if ((v10 > threshold) !== (v11 > threshold)) {
+            const ty = (threshold - v10) / (v11 - v10);
+            const fx = px + STEP, fy = py + ty * STEP;
+            if ((v00 > threshold) !== (v10 > threshold)) {
+              const tx = (threshold - v00) / (v10 - v00);
+              cx.moveTo(px + tx * STEP, py);
+              cx.lineTo(fx, fy);
+            }
+          }
+        }
+      }
+      cx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+      cx.lineWidth = 0.9;
+      cx.stroke();
+    }
+  }, 40);
+})();
+
+// ─── 6. ВАРП / ГИПЕРПРОСТРАНСТВО ────────────────────────────
+(function() {
+  const cv = document.getElementById('c6');
+  const cx = cv.getContext('2d');
+  let W, H, stars = [], t = 0;
+  const COUNT = 220;
+
+  function mkStar() {
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = Math.random() * 0.05 + 0.001;
+    return { angle, dist, speed: Math.random() * 0.0015 + 0.0005,
+             hue: Math.random() > 0.7 ? 260 : 220 };
+  }
+
+  function resize() {
+    W=cv.width=cv.offsetWidth; H=cv.height=cv.offsetHeight;
+    stars = Array.from({length: COUNT}, mkStar);
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  setInterval(function() {
+    t++;
+    cx.fillStyle = 'rgba(13,13,20,0.18)';
+    cx.fillRect(0, 0, W, H);
+
+    const cx0 = W / 2, cy0 = H / 2;
+
+    for (const s of stars) {
+      s.dist += s.speed * (1 + s.dist * 6);
+      if (s.dist > 1) { Object.assign(s, mkStar()); s.dist = 0.001; }
+
+      const prevD = s.dist - s.speed * (1 + s.dist * 5);
+      const x  = cx0 + Math.cos(s.angle) * s.dist * Math.min(W, H) * 0.7;
+      const y  = cy0 + Math.sin(s.angle) * s.dist * Math.min(W, H) * 0.5;
+      const px = cx0 + Math.cos(s.angle) * prevD  * Math.min(W, H) * 0.7;
+      const py = cy0 + Math.sin(s.angle) * prevD  * Math.min(W, H) * 0.5;
+
+      const alpha = Math.min(s.dist * 2, 0.9);
+      const width = s.dist * 2.2;
+
+      cx.beginPath();
+      cx.moveTo(px, py); cx.lineTo(x, y);
+      cx.strokeStyle = `hsla(${s.hue}, 80%, 75%, ${alpha})`;
+      cx.lineWidth = width;
+      cx.stroke();
+    }
+  }, 33);
+})();
+
+// ─── 7. HEX-ПУЛЬС ────────────────────────────────────────────
+(function() {
+  const cv = document.getElementById('c7');
+  const cx = cv.getContext('2d');
+  let W, H, t = 0;
+
+  function resize() { W=cv.width=cv.offsetWidth; H=cv.height=cv.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  function hex(x, y, r, fill, stroke, alpha) {
+    cx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const a = (Math.PI / 3) * i - Math.PI / 6;
+      i === 0 ? cx.moveTo(x + r*Math.cos(a), y + r*Math.sin(a))
+              : cx.lineTo(x + r*Math.cos(a), y + r*Math.sin(a));
+    }
+    cx.closePath();
+    if (fill) { cx.fillStyle = fill; cx.fill(); }
+    if (stroke) { cx.strokeStyle = `rgba(${stroke},${alpha})`; cx.lineWidth = 0.8; cx.stroke(); }
+  }
+
+  setInterval(function() {
+    t += 0.018;
+    cx.fillStyle = '#0d0d14';
+    cx.fillRect(0, 0, W, H);
+
+    const SIZE = 36;
+    const cols = Math.ceil(W / (SIZE * 1.73)) + 2;
+    const rows = Math.ceil(H / (SIZE * 1.5))  + 2;
+
+    for (let row = -1; row < rows; row++) {
+      for (let col = -1; col < cols; col++) {
+        const x = col * SIZE * 1.732 + (row % 2) * SIZE * 0.866;
+        const y = row * SIZE * 1.5;
+
+        // волна пульса от центра
+        const dx = (x - W/2) / W;
+        const dy = (y - H/2) / H;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const wave = Math.sin(dist * 7 - t * 2.5) * 0.5 + 0.5;
+
+        const alpha = wave * 0.28 + 0.03;
+        const fillAlpha = wave * 0.06;
+
+        if (fillAlpha > 0.01) {
+          hex(x, y, SIZE-1, `rgba(108,99,255,${fillAlpha})`, null, 0);
+        }
+        hex(x, y, SIZE-1, null, '108,99,255', alpha);
+      }
+    }
+  }, 33);
+})();
+
+// ─── 8. ЧАСТИЦЫ + МЫШЬ ───────────────────────────────────────
+(function() {
+  const cv = document.getElementById('c8');
+  const cx = cv.getContext('2d');
+  let W, H, mouse = {x: -999, y: -999};
+  const COUNT = 100;
+  let pts = [];
+
+  function mkPt() {
+    return {
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random()-0.5)*0.6, vy: (Math.random()-0.5)*0.6,
+      r: Math.random()*2+1,
+      color: Math.random() > 0.5 ? '108,99,255' : '167,139,250'
+    };
+  }
+
+  function resize() {
+    W=cv.width=cv.offsetWidth; H=cv.height=cv.offsetHeight;
+    pts = Array.from({length: COUNT}, mkPt);
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  cv.parentElement.addEventListener('mousemove', function(e) {
+    const r = cv.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+  });
+  cv.parentElement.addEventListener('mouseleave', function() {
+    mouse.x = -999; mouse.y = -999;
+  });
+
+  setInterval(function() {
+    cx.fillStyle = '#0d0d14';
+    cx.fillRect(0, 0, W, H);
+
+    for (const p of pts) {
+      // притяжение к мыши
+      const mdx = mouse.x - p.x, mdy = mouse.y - p.y;
+      const md = Math.sqrt(mdx*mdx + mdy*mdy);
+      if (md < 180 && md > 0) {
+        const force = (180 - md) / 180 * 0.012;
+        p.vx += (mdx/md) * force;
+        p.vy += (mdy/md) * force;
+      }
+      // затухание
+      p.vx *= 0.98; p.vy *= 0.98;
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+    }
+
+    // линии между близкими частицами
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i+1; j < pts.length; j++) {
+        const dx = pts[i].x-pts[j].x, dy = pts[i].y-pts[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < 120) {
+          cx.beginPath();
+          cx.moveTo(pts[i].x, pts[i].y); cx.lineTo(pts[j].x, pts[j].y);
+          cx.strokeStyle = `rgba(108,99,255,${(1-d/120)*0.4})`;
+          cx.lineWidth = 0.7; cx.stroke();
+        }
+      }
+    }
+
+    // линии к мыши
+    for (const p of pts) {
+      const dx = mouse.x-p.x, dy = mouse.y-p.y;
+      const d = Math.sqrt(dx*dx+dy*dy);
+      if (d < 150) {
+        cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(mouse.x, mouse.y);
+        cx.strokeStyle = `rgba(167,139,250,${(1-d/150)*0.35})`;
+        cx.lineWidth = 0.6; cx.stroke();
+      }
+    }
+
+    // точки
+    cx.shadowBlur = 8; cx.shadowColor = '#a78bfa';
+    for (const p of pts) {
+      cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      cx.fillStyle = `rgba(${p.color},0.85)`; cx.fill();
+    }
+    cx.shadowBlur = 0;
+  }, 33);
+})();
+</script>
+</body>
+</html>

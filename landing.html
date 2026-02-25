@@ -172,7 +172,7 @@
     .section-sub { color: var(--muted); font-size: 1rem; max-width: 500px; margin-bottom: 52px; }
 
     /* SERVICES */
-    #services { background: linear-gradient(to bottom, rgba(19,19,31,0.7) 0%, var(--bg2) 50%); }
+    #services { background: linear-gradient(to bottom, rgba(13,13,20,0.35) 0%, rgba(19,19,31,0.82) 60%); }
     .services-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -212,7 +212,7 @@
     }
 
     /* HOW */
-    #how { background: var(--bg); }
+    #how { background: rgba(13,13,20,0.82); }
     .steps { display: flex; flex-direction: column; gap: 0; max-width: 700px; }
     .step {
       display: flex; gap: 24px; align-items: flex-start;
@@ -236,7 +236,7 @@
     .step-body p { font-size: 0.88rem; color: var(--muted); }
 
     /* ABOUT */
-    #about { background: var(--bg3); }
+    #about { background: rgba(26,26,46,0.82); }
     .about-inner {
       display: grid; grid-template-columns: 1fr 1.6fr;
       gap: 56px; align-items: center;
@@ -275,7 +275,7 @@
     }
 
     /* FAQ */
-    #faq { background: var(--bg2); }
+    #faq { background: rgba(19,19,31,0.82); }
     .faq-list { max-width: 720px; display: flex; flex-direction: column; gap: 12px; }
     .faq-item {
       background: var(--card);
@@ -303,7 +303,7 @@
 
     /* CTA */
     #contact {
-      background: linear-gradient(135deg, var(--bg3) 0%, #1a1040 100%);
+      background: linear-gradient(135deg, rgba(26,26,46,0.82) 0%, rgba(26,16,64,0.82) 100%);
       text-align: center;
     }
     .cta-box {
@@ -317,7 +317,7 @@
 
     /* FOOTER */
     footer {
-      background: var(--bg);
+      background: rgba(13,13,20,0.88);
       border-top: 1px solid var(--border);
       padding: 28px 24px;
       text-align: center;
@@ -663,40 +663,117 @@
 </footer>
 
 <script>
-  // Matrix rain
+  // Dual-mode background: neural network (hero) → topography (rest)
   (function() {
     const canvas = document.getElementById('matrix-bg');
     const ctx = canvas.getContext('2d');
-    const CHARS = 'POHILKOMIHAIL';
-    const FS = 14;
-    let drops = [];
+    let W, H, t = 0, blend = 0;
+    const COUNT = 70, MAX_D = 160;
+    let pts = [];
+
+    // ── Topo noise ──
+    function noise(x, y, z) {
+      return Math.sin(x*1.3+z)        * 0.4
+           + Math.sin(y*1.1+z*1.3)    * 0.3
+           + Math.sin((x+y)*0.7+z*0.7)* 0.2
+           + Math.sin(x*2.3+y*1.7+z)  * 0.1;
+    }
 
     function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      ctx.fillStyle = '#0d0d14';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      drops = Array.from({ length: Math.ceil(canvas.width / FS) }, () => Math.random() * -(canvas.height / FS));
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      pts = Array.from({length: COUNT}, () => ({
+        x: Math.random()*W, y: Math.random()*H,
+        vx:(Math.random()-0.5)*0.38, vy:(Math.random()-0.5)*0.38,
+        r: Math.random()*1.5+1
+      }));
     }
     resize();
     window.addEventListener('resize', resize);
 
-    function tick() {
-      ctx.fillStyle = 'rgba(13,13,20,0.06)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.font = FS + 'px monospace';
-      for (let i = 0; i < drops.length; i++) {
-        const ch = CHARS[Math.floor(Math.random() * CHARS.length)];
-        const y = drops[i] * FS;
-        ctx.fillStyle = 'rgba(108,99,255,0.65)';
-        ctx.fillText(ch, i * FS, y);
-        ctx.fillStyle = 'rgba(167,139,250,0.95)';
-        ctx.fillText(ch, i * FS, y - FS);
-        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i] += 0.45;
+    function drawNeural(alpha) {
+      ctx.globalAlpha = alpha;
+      for (const p of pts) {
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+        if(p.y<0)p.y=H; if(p.y>H)p.y=0;
       }
+      for (let i=0;i<pts.length;i++) {
+        for (let j=i+1;j<pts.length;j++) {
+          const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+          const d=Math.sqrt(dx*dx+dy*dy);
+          if(d<MAX_D){
+            ctx.beginPath();
+            ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
+            ctx.strokeStyle=`rgba(108,99,255,${(1-d/MAX_D)*0.5*alpha})`;
+            ctx.lineWidth=0.8; ctx.stroke();
+          }
+        }
+      }
+      ctx.shadowBlur=8; ctx.shadowColor='#a78bfa';
+      for (const p of pts) {
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=`rgba(167,139,250,${0.88*alpha})`; ctx.fill();
+      }
+      ctx.shadowBlur=0;
+      ctx.globalAlpha=1;
     }
-    setInterval(tick, 40);
+
+    function drawTopo(alpha) {
+      ctx.globalAlpha = alpha;
+      const LEVELS = 12, STEP = 14;
+      for (let lv = 0; lv < LEVELS; lv++) {
+        const threshold = -1 + (lv/LEVELS)*2;
+        const a = (0.09 + (lv/LEVELS)*0.24) * alpha;
+        const hue = lv/LEVELS;
+        const r = Math.round(79  + hue*(167-79));
+        const g = Math.round(70  + hue*(139-70));
+        const b = Math.round(229 + hue*(250-229));
+        ctx.beginPath();
+        for (let px=0; px<W-STEP; px+=STEP) {
+          for (let py=0; py<H-STEP; py+=STEP) {
+            const x0=px/W*3, y0=py/H*3, x1=(px+STEP)/W*3, y1=(py+STEP)/H*3;
+            const v00=noise(x0,y0,t*0.008), v10=noise(x1,y0,t*0.008);
+            const v01=noise(x0,y1,t*0.008), v11=noise(x1,y1,t*0.008);
+            if ((v00>threshold)!==(v10>threshold)) {
+              const tx=(threshold-v00)/(v10-v00);
+              if ((v00>threshold)!==(v01>threshold)) {
+                const ty=(threshold-v00)/(v01-v00);
+                ctx.moveTo(px+tx*STEP,py);
+                ctx.lineTo(px,py+ty*STEP);
+              }
+            }
+            if ((v10>threshold)!==(v11>threshold)) {
+              const ty=(threshold-v10)/(v11-v10);
+              if ((v00>threshold)!==(v10>threshold)) {
+                const tx=(threshold-v00)/(v10-v00);
+                ctx.moveTo(px+tx*STEP,py);
+                ctx.lineTo(px+STEP,py+ty*STEP);
+              }
+            }
+          }
+        }
+        ctx.strokeStyle = `rgba(${r},${g},${b},${a})`;
+        ctx.lineWidth = 0.9;
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    setInterval(function() {
+      t++;
+      // blend: 0=нейросеть, 1=топография
+      const hero = document.querySelector('.hero');
+      const heroBottom = hero ? hero.getBoundingClientRect().bottom : H;
+      const target = heroBottom < H * 0.5 ? 1 : 0;
+      blend += (target - blend) * 0.04;
+
+      ctx.fillStyle = '#0d0d14';
+      ctx.fillRect(0,0,W,H);
+
+      if (blend < 0.99) drawNeural(1 - blend);
+      if (blend > 0.01) drawTopo(blend);
+    }, 33);
   })();
 
   // Scroll reveal
