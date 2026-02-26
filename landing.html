@@ -110,7 +110,24 @@
     }
     .hero-btns { display: flex; gap: 14px; justify-content: flex-start; flex-wrap: wrap; align-items: center; }
     .hero-contact-row { display: inline-flex; align-items: center; gap: 10px; }
-    .hero-discuss-btn { cursor: default; }
+    .hero-contact-row .hero-icon-btn:first-of-type { margin-left: 16px; }
+    .hero-discuss-btn {
+      cursor: default;
+      border-radius: 30px 0 0 30px;
+      padding-right: 32px;
+      position: relative;
+      box-shadow: none;
+    }
+    .hero-discuss-btn::after {
+      content: '';
+      position: absolute;
+      right: -23px; top: 0; bottom: 0;
+      width: 0; height: 0;
+      border-top: 24px solid transparent;
+      border-bottom: 24px solid transparent;
+      border-left: 23px solid var(--accent);
+      transition: border-left-color .2s;
+    }
     .hero-icon-btn {
       display: inline-flex; align-items: center; justify-content: center;
       width: 44px; height: 44px; border-radius: 50%;
@@ -446,7 +463,7 @@
       <p>Создаю цифровые продукты под любые задачи: от лендинга до полноценного веб-приложения или AI-ассистента. Напишите идею — разберём и запустим.</p>
       <div class="hero-btns">
         <div class="hero-contact-row">
-          <span class="btn-primary hero-discuss-btn">Обсудить идею →</span>
+          <span class="btn-primary hero-discuss-btn">Обсудить идею</span>
           <a class="hero-icon-btn" href="https://t.me/MuXauJl89" target="_blank" title="Telegram">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.287c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.934z"/></svg>
           </a>
