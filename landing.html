@@ -112,21 +112,25 @@
     .hero-contact-row { display: inline-flex; align-items: center; gap: 10px; }
     .hero-contact-row .hero-icon-btn:first-of-type { margin-left: 16px; }
     .hero-discuss-btn {
-      cursor: default;
-      border-radius: 30px 0 0 30px;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      border-radius: 30px;
       padding-right: 24px;
       position: relative;
       box-shadow: none;
+      transition: background .2s, transform .15s, box-shadow .2s;
     }
-    .hero-discuss-btn::after {
-      content: '';
-      position: absolute;
-      right: -26px; top: 0; bottom: 0;
-      width: 27px;
-      background: var(--accent);
-      clip-path: polygon(0 0, 0 100%, 100% 50%);
-      transition: background .2s;
+    .hero-discuss-arrow {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 8px;
+      transition: transform .2s;
     }
+    .hero-discuss-btn:hover .hero-discuss-arrow {
+      transform: translateX(4px);
+    }
+    /* Удалён ::after, теперь стрелка внутри */
     .hero-icon-btn {
       display: inline-flex; align-items: center; justify-content: center;
       width: 44px; height: 44px; border-radius: 50%;
@@ -363,12 +367,32 @@
 
     /* MOBILE */
     @media(max-width: 768px) {
+            .hero-discuss-btn {
+              font-size: 0.92rem;
+              padding: 11px 18px 11px 16px;
+            }
+            .hero-discuss-arrow {
+              width: 18px !important;
+              height: 18px !important;
+              margin-left: 7px !important;
+            }
       nav { padding: 14px 20px; }
       .nav-links { display: none; }
       .hero-content { grid-template-columns: 1fr; gap: 32px; text-align: center; }
       .hero-photo-wrap { order: -1; max-width: 180px; margin: 0 auto; }
       .hero-photo-hero { aspect-ratio: 1/1; border-radius: 50%; }
-      .hero-btns { justify-content: center; }
+      .hero-btns {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+      }
+      .hero-discuss-btn {
+        width: 100%;
+        justify-content: center;
+        border-radius: 30px;
+        padding-right: 24px;
+      }
       .hero-stats { gap: 24px; justify-content: center; }
       .about-inner { grid-template-columns: 1fr; }
     }
@@ -509,7 +533,9 @@
       <p>Создаю цифровые продукты под любые задачи: от лендинга до полноценного веб-приложения или AI-ассистента. Напишите идею — разберём и запустим.</p>
       <div class="hero-btns">
         <div class="hero-contact-row">
-          <span class="btn-primary hero-discuss-btn">Обсудить идею</span>
+          <span class="btn-primary hero-discuss-btn">Обсудить идею
+            <svg class="hero-discuss-arrow" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left:10px;"><path d="M6 11h10M13 8l3 3-3 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
           <a class="hero-icon-btn" href="https://t.me/MuXauJl89" target="_blank" title="Telegram">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-1.97 9.287c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.934z"/></svg>
           </a>
@@ -671,7 +697,7 @@
         </div>
         <h3>Telegram-бот для бизнеса</h3>
         <p>Принимает заявки, отвечает на вопросы и ведёт клиента по воронке — без менеджера, круглосуточно.</p>
-        <span class="service-price">Цена — после аудита задачи</span>
+          <span class="service-price">от 22 100 ₽</span>
       </div>
 
       <div class="service-card reveal">
@@ -688,7 +714,7 @@
         </div>
         <h3>Лендинг или сайт под проект</h3>
         <p>Собираю быстро — под запуск, продукт или личный бренд. Один файл, никаких лишних зависимостей.</p>
-        <span class="service-price">Цена — после аудита задачи</span>
+          <span class="service-price">от 32 250 ₽</span>
       </div>
 
       <div class="service-card reveal">
@@ -703,7 +729,7 @@
         </div>
         <h3>Цифровая визитка</h3>
         <p>Страница с контактами, услугами и ссылками. Отправляете ссылку — вместо бумажной карточки.</p>
-        <span class="service-price">Цена — после аудита задачи</span>
+          <span class="service-price">от 32 250 ₽</span>
       </div>
 
       <div class="service-card reveal">
@@ -721,7 +747,7 @@
         </div>
         <h3>Веб-приложения и мини-апп</h3>
         <p>Каталог, CRM, личный кабинет, запись — как отдельный сайт или встроенное приложение в Telegram.</p>
-        <span class="service-price">Цена — после аудита задачи</span>
+          <span class="service-price">от 32 250 ₽</span>
       </div>
 
       <div class="service-card reveal">
@@ -732,28 +758,20 @@
         </div>
         <h3>AI-ассистент на базе GPT</h3>
         <p>Знает ваш продукт и отвечает за вас. Обучается на вашем контенте — работает как опытный менеджер.</p>
-        <span class="service-price">Цена — после аудита задачи</span>
+          <span class="service-price">от 54 300 ₽</span>
       </div>
 
       <div class="service-card reveal">
         <div class="service-icon">
           <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
-            <rect x="7" y="3" width="26" height="34" rx="3" stroke="#a78bfa" stroke-width="1.8"/>
-            <rect x="10" y="6" width="20" height="9" rx="1.5" stroke="#a78bfa" stroke-width="1.2" fill="#a78bfa" fill-opacity="0.07"/>
-            <line class="calc-cursor" x1="26" y1="8" x2="26" y2="13" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
-            <rect x="10" y="18" width="5" height="5" rx="1" stroke="#a78bfa" stroke-width="1" stroke-opacity="0.5"/>
-            <rect x="17.5" y="18" width="5" height="5" rx="1" stroke="#a78bfa" stroke-width="1" stroke-opacity="0.5"/>
-            <rect x="25" y="18" width="5" height="5" rx="1" stroke="#a78bfa" stroke-width="1" stroke-opacity="0.5"/>
-            <rect x="10" y="25" width="5" height="5" rx="1" stroke="#a78bfa" stroke-width="1" stroke-opacity="0.5"/>
-            <rect x="17.5" y="25" width="5" height="5" rx="1" stroke="#a78bfa" stroke-width="1" stroke-opacity="0.5"/>
-            <rect x="25" y="25" width="5" height="5" rx="1" fill="#a78bfa" fill-opacity="0.15" stroke="#a78bfa" stroke-width="1"/>
-            <line x1="27" y1="27.5" x2="29" y2="27.5" stroke="#a78bfa" stroke-width="1.2" stroke-linecap="round"/>
-            <line x1="27" y1="29.5" x2="29" y2="29.5" stroke="#a78bfa" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="20" cy="20" r="16" stroke="#a78bfa" stroke-width="1.8"/>
+            <path d="M12 28c0-4 8-4 8 0" stroke="#a78bfa" stroke-width="1.5" fill="none"/>
+            <rect x="17" y="13" width="6" height="6" rx="2" stroke="#a78bfa" stroke-width="1.2" fill="#a78bfa" fill-opacity="0.12"/>
           </svg>
         </div>
-        <h3>Калькулятор стоимости</h3>
-        <p>Клиент вводит параметры и сразу видит цену. Повышает конверсию и сокращает переписку.</p>
-        <span class="service-price">Цена — после аудита задачи</span>
+        <h3>Калькулятор рассрочки</h3>
+        <p>Показывает клиенту ежемесячный платёж и условия. Можно встроить на сайт или в бота.</p>
+        <span class="service-price">от 15 000 ₽</span>
       </div>
 
     </div>
