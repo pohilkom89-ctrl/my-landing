@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(magick:*)",
+      "Bash(convert:*)",
+      "Bash(node -e:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"c:/Users/Миша/Documents/my-project/my-landing/compress.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -Command:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Temp"
+    ]
+  }
+}
