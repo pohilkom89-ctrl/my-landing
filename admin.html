@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Админ-панель — Лендинг</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #F0F2FF;
+      --bg2:     #E8EAFF;
+      --card:    #FFFFFF;
+      --border:  rgba(91,91,214,0.18);
+      --text:    #0A0E1C;
+      --sub:     #374151;
+      --sub2:    #6B7280;
+      --accent:  #5B5BD6;
+      --accent-h:#4747C2;
+      --r:       16px;
+      --danger:  #DC2626;
+      --success: #16A34A;
+    }
+
+    html { background: var(--bg); }
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ─── LOGIN ─── */
+    .login-wrap {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 20px;
+    }
+    .login-card {
+      background: var(--card); border-radius: var(--r); padding: 40px 36px;
+      box-shadow: 0 8px 40px rgba(91,91,214,0.12);
+      width: 100%; max-width: 400px;
+    }
+    .login-card h1 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .login-card p { font-size: 0.85rem; color: var(--sub2); margin-bottom: 24px; }
+
+    /* ─── FORMS ─── */
+    label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--sub); margin-bottom: 6px; }
+    input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select {
+      width: 100%; padding: 10px 14px; border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 10px; font: inherit; font-size: 0.88rem;
+      background: var(--bg); color: var(--text); transition: border-color .2s;
+    }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 80px; }
+    .form-group { margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-hint { font-size: 0.75rem; color: var(--sub2); margin-top: 4px; }
+
+    .checkbox-label {
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+      font-size: 0.85rem; font-weight: 500;
+    }
+    .checkbox-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer;
+      font: inherit; font-size: 0.85rem; font-weight: 700; transition: all .2s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-h); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #B91C1C; }
+    .btn-outline {
+      background: transparent; color: var(--accent);
+      border: 1.5px solid var(--accent);
+    }
+    .btn-outline:hover { background: rgba(91,91,214,0.06); }
+    .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+    .btn-block { width: 100%; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ─── LAYOUT ─── */
+    .app { display: none; }
+    .topbar {
+      background: var(--card); border-bottom: 1px solid var(--border);
+      padding: 14px 28px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-brand { font-weight: 800; font-size: 1rem; color: var(--accent); }
+    .topbar-user { display: flex; align-items: center; gap: 12px; font-size: 0.82rem; color: var(--sub2); }
+    .topbar-user .btn { font-size: 0.78rem; padding: 6px 14px; }
+
+    .tabs {
+      display: flex; gap: 4px; padding: 16px 28px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      background: var(--card); overflow-x: auto;
+    }
+    .tab {
+      padding: 10px 20px; border: none; background: none; cursor: pointer;
+      font: inherit; font-size: 0.84rem; font-weight: 600; color: var(--sub2);
+      border-bottom: 2.5px solid transparent; transition: all .2s; white-space: nowrap;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .content { padding: 24px 28px; max-width: 900px; }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--card); border: 1px solid rgba(0,0,0,0.08);
+      border-radius: var(--r); padding: 24px; margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .card-header h3 { font-size: 0.95rem; font-weight: 700; }
+    .card-actions { display: flex; gap: 8px; }
+
+    /* ─── LIST ITEMS ─── */
+    .list-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 14px 18px; background: var(--card);
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 12px;
+      margin-bottom: 8px; transition: box-shadow .2s;
+    }
+    .list-item:hover { box-shadow: 0 2px 12px rgba(91,91,214,0.08); }
+    .list-item-order {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: var(--bg2); display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: var(--accent); flex-shrink: 0;
+    }
+    .list-item-body { flex: 1; min-width: 0; }
+    .list-item-title { font-size: 0.88rem; font-weight: 700; }
+    .list-item-sub { font-size: 0.78rem; color: var(--sub2); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .list-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .list-item-hidden { opacity: 0.45; }
+
+    .move-btn {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.1);
+      background: var(--card); cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; transition: background .15s;
+    }
+    .move-btn:hover { background: var(--bg2); }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 200;
+      padding: 12px 22px; border-radius: 12px;
+      font-size: 0.85rem; font-weight: 600; color: #fff;
+      transform: translateY(80px); opacity: 0; transition: all .3s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-success { background: var(--success); }
+    .toast-error { background: var(--danger); }
+
+    /* ─── MODAL ─── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card); border-radius: var(--r); padding: 28px;
+      width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    }
+    .modal h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 20px; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      .content { padding: 16px; }
+      .topbar { padding: 12px 16px; }
+      .tabs { padding: 12px 16px 0; }
+      .form-row { grid-template-columns: 1fr; }
+      .modal { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-card">
+    <h1>Админ-панель</h1>
+    <p>Войдите, чтобы управлять контентом лендинга</p>
+    <div class="form-group">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" placeholder="admin@example.com" />
+    </div>
+    <div class="form-group">
+      <label for="loginPass">Пароль</label>
+      <input type="password" id="loginPass" placeholder="••••••••" />
+    </div>
+    <div id="loginError" style="color:var(--danger);font-size:0.82rem;margin-bottom:12px;display:none;"></div>
+    <button class="btn btn-primary btn-block" id="loginBtn">Войти</button>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div class="app" id="app">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-brand">Админ-панель</div>
+    <div class="topbar-user">
+      <span id="userEmail"></span>
+      <button class="btn btn-outline btn-sm" id="logoutBtn">Выйти</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="settings">Настройки</button>
+    <button class="tab" data-tab="services">Услуги</button>
+    <button class="tab" data-tab="faq">FAQ</button>
+    <button class="tab" data-tab="portfolio">Портфолио</button>
+    <button class="tab" data-tab="reviews">Отзывы</button>
+  </div>
+
+  <!-- ─── TAB: SETTINGS ─── -->
+  <div class="content tab-content" id="tab-settings">
+    <div class="card">
+      <div class="card-header"><h3>Бейдж занятости</h3></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Занятость (%)</label>
+          <input type="number" id="s_busy_pct" min="0" max="100" />
+        </div>
+        <div class="form-group">
+          <label>Свободных слотов</label>
+          <input type="number" id="s_free_slots" min="0" max="20" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Месяц (в предложном падеже)</label>
+        <input type="text" id="s_slots_month" placeholder="апреле" />
+        <div class="form-hint">Например: апреле, мае, июне</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3>Hero секция</h3></div>
+      <div class="form-group">
+        <label>Заголовок H1</label>
+        <input type="text" id="s_hero_title" />
+      </div>
+      <div class="form-group">
+        <label>Подзаголовок</label>
+        <textarea id="s_hero_subtitle" rows="2"></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3>Обо мне</h3></div>
+      <div class="form-group">
+        <label>Первый абзац</label>
+        <textarea id="s_about_text_1" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Второй абзац</label>
+        <textarea id="s_about_text_2" rows="3"></textarea>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="saveSettings">Сохранить настройки</button>
+  </div>
+
+  <!-- ─── TAB: SERVICES ─── -->
+  <div class="content tab-content" id="tab-services" style="display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h3 style="font-size:1rem;font-weight:700;">Услуги</h3>
+      <button class="btn btn-primary btn-sm" onclick="openServiceModal()">+ Добавить</button>
+    </div>
+    <div id="servicesList"></div>
+  </div>
+
+  <!-- ─── TAB: FAQ ─── -->
+  <div class="content tab-content" id="tab-faq" style="display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h3 style="font-size:1rem;font-weight:700;">Частые вопросы</h3>
+      <button class="btn btn-primary btn-sm" onclick="openFaqModal()">+ Добавить</button>
+    </div>
+    <div id="faqList"></div>
+  </div>
+
+  <!-- ─── TAB: PORTFOLIO ─── -->
+  <div class="content tab-content" id="tab-portfolio" style="display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h3 style="font-size:1rem;font-weight:700;">Портфолио</h3>
+      <button class="btn btn-primary btn-sm" onclick="openPortfolioModal()">+ Добавить</button>
+    </div>
+    <div id="portfolioList"></div>
+  </div>
+
+  <!-- ─── TAB: REVIEWS ─── -->
+  <div class="content tab-content" id="tab-reviews" style="display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h3 style="font-size:1rem;font-weight:700;">Отзывы</h3>
+      <button class="btn btn-primary btn-sm" onclick="openReviewModal()">+ Добавить</button>
+    </div>
+    <div id="reviewsList"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ SUPABASE SDK ══ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script>
+// ════════════════════════════════════════
+// CONFIG — replace with your Supabase project values
+// ════════════════════════════════════════
+const SUPABASE_URL  = 'YOUR_SUPABASE_URL';
+const SUPABASE_KEY  = 'YOUR_SUPABASE_ANON_KEY';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ─── DOM refs ───
+const loginScreen = document.getElementById('loginScreen');
+const app         = document.getElementById('app');
+const toast       = document.getElementById('toast');
+const modal       = document.getElementById('modal');
+const modalBody   = document.getElementById('modalBody');
+
+// ─── Toast ───
+function showToast(msg, type = 'success') {
+  toast.textContent = msg;
+  toast.className = 'toast toast-' + type + ' show';
+  setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+// ─── Modal ───
+function openModal(html) {
+  modalBody.innerHTML = html;
+  modal.classList.add('open');
+}
+function closeModal() { modal.classList.remove('open'); }
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ════════════════════════════════════════
+// AUTH
+// ════════════════════════════════════════
+async function checkSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    showApp(session.user);
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+  if (error) {
+    errEl.textContent = 'Неверный email или пароль';
+    errEl.style.display = 'block';
+    return;
+  }
+  showApp(data.user);
+});
+
+document.getElementById('loginPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('loginBtn').click();
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  location.reload();
+});
+
+function showApp(user) {
+  loginScreen.style.display = 'none';
+  app.style.display = 'block';
+  document.getElementById('userEmail').textContent = user.email;
+  loadSettings();
+  loadServices();
+  loadFaq();
+  loadPortfolio();
+  loadReviews();
+}
+
+// ════════════════════════════════════════
+// TABS
+// ════════════════════════════════════════
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).style.display = 'block';
+  });
+});
+
+// ════════════════════════════════════════
+// SETTINGS
+// ════════════════════════════════════════
+const settingsKeys = ['busy_pct','free_slots','slots_month','hero_title','hero_subtitle','about_text_1','about_text_2'];
+
+async function loadSettings() {
+  const { data } = await supabase.from('settings').select('*');
+  if (!data) return;
+  data.forEach(row => {
+    const el = document.getElementById('s_' + row.key);
+    if (el) el.value = row.value;
+  });
+}
+
+document.getElementById('saveSettings').addEventListener('click', async () => {
+  const btn = document.getElementById('saveSettings');
+  btn.disabled = true; btn.textContent = 'Сохраняю...';
+
+  for (const key of settingsKeys) {
+    const el = document.getElementById('s_' + key);
+    if (!el) continue;
+    await supabase.from('settings').upsert({ key, value: el.value, updated_at: new Date().toISOString() });
+  }
+
+  btn.disabled = false; btn.textContent = 'Сохранить настройки';
+  showToast('Настройки сохранены');
+});
+
+// ════════════════════════════════════════
+// SERVICES CRUD
+// ════════════════════════════════════════
+let servicesData = [];
+
+async function loadServices() {
+  const { data } = await supabase.from('services').select('*').order('sort_order');
+  servicesData = data || [];
+  renderServices();
+}
+
+function renderServices() {
+  const el = document.getElementById('servicesList');
+  if (!servicesData.length) { el.innerHTML = '<p style="color:var(--sub2);font-size:0.85rem;">Услуг пока нет</p>'; return; }
+  el.innerHTML = servicesData.map((s, i) => `
+    <div class="list-item ${s.visible ? '' : 'list-item-hidden'}">
+      <div class="list-item-order">${i + 1}</div>
+      <div class="list-item-body">
+        <div class="list-item-title">${esc(s.name)} ${s.is_popular ? '<span style="color:var(--accent);font-size:0.75rem;">★ Популярно</span>' : ''}</div>
+        <div class="list-item-sub">от ${s.price.toLocaleString('ru-RU')} ₽ · ${s.tags.join(', ')}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="move-btn" title="Вверх" onclick="moveService(${s.id},-1)" ${i===0?'disabled':''}>↑</button>
+        <button class="move-btn" title="Вниз" onclick="moveService(${s.id},1)" ${i===servicesData.length-1?'disabled':''}>↓</button>
+        <button class="btn btn-outline btn-sm" onclick="openServiceModal(${s.id})">Ред.</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteService(${s.id})">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openServiceModal(id) {
+  const s = id ? servicesData.find(x => x.id === id) : null;
+  openModal(`
+    <h2>${s ? 'Редактировать' : 'Добавить'} услугу</h2>
+    <div class="form-group"><label>Название</label><input type="text" id="m_svc_name" value="${esc(s?.name || '')}" /></div>
+    <div class="form-group"><label>Описание</label><textarea id="m_svc_desc" rows="2">${esc(s?.description || '')}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Цена (₽)</label><input type="number" id="m_svc_price" value="${s?.price || 0}" /></div>
+      <div class="form-group">
+        <label class="checkbox-label" style="margin-top:22px;">
+          <input type="checkbox" id="m_svc_popular" ${s?.is_popular ? 'checked' : ''} /> Популярно
+        </label>
+      </div>
+    </div>
+    <div class="form-group"><label>Теги</label><input type="text" id="m_svc_tags" value="${esc((s?.tags || []).join(', '))}" /><div class="form-hint">Через запятую: Python, aiogram, SQLite</div></div>
+    <div class="form-group"><label>Преимущества</label><textarea id="m_svc_benefits" rows="3">${esc((s?.benefits || []).join('\n'))}</textarea><div class="form-hint">Каждое с новой строки</div></div>
+    <label class="checkbox-label"><input type="checkbox" id="m_svc_visible" ${s?.visible !== false ? 'checked' : ''} /> Показывать на сайте</label>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-primary" onclick="saveService(${id || 'null'})">Сохранить</button>
+    </div>
+  `);
+}
+
+async function saveService(id) {
+  const obj = {
+    name:        document.getElementById('m_svc_name').value.trim(),
+    description: document.getElementById('m_svc_desc').value.trim(),
+    price:       parseInt(document.getElementById('m_svc_price').value) || 0,
+    is_popular:  document.getElementById('m_svc_popular').checked,
+    tags:        document.getElementById('m_svc_tags').value.split(',').map(t => t.trim()).filter(Boolean),
+    benefits:    document.getElementById('m_svc_benefits').value.split('\n').map(t => t.trim()).filter(Boolean),
+    visible:     document.getElementById('m_svc_visible').checked,
+  };
+  if (!obj.name) return showToast('Введите название', 'error');
+
+  if (id) {
+    await supabase.from('services').update(obj).eq('id', id);
+  } else {
+    obj.sort_order = servicesData.length + 1;
+    await supabase.from('services').insert(obj);
+  }
+  closeModal();
+  showToast('Услуга сохранена');
+  loadServices();
+}
+
+async function deleteService(id) {
+  if (!confirm('Удалить услугу?')) return;
+  await supabase.from('services').delete().eq('id', id);
+  showToast('Услуга удалена');
+  loadServices();
+}
+
+async function moveService(id, dir) {
+  const idx = servicesData.findIndex(s => s.id === id);
+  const swapIdx = idx + dir;
+  if (swapIdx < 0 || swapIdx >= servicesData.length) return;
+  const a = servicesData[idx], b = servicesData[swapIdx];
+  await supabase.from('services').update({ sort_order: b.sort_order }).eq('id', a.id);
+  await supabase.from('services').update({ sort_order: a.sort_order }).eq('id', b.id);
+  loadServices();
+}
+
+// ════════════════════════════════════════
+// FAQ CRUD
+// ════════════════════════════════════════
+let faqData = [];
+
+async function loadFaq() {
+  const { data } = await supabase.from('faq').select('*').order('sort_order');
+  faqData = data || [];
+  renderFaq();
+}
+
+function renderFaq() {
+  const el = document.getElementById('faqList');
+  if (!faqData.length) { el.innerHTML = '<p style="color:var(--sub2);font-size:0.85rem;">Вопросов пока нет</p>'; return; }
+  el.innerHTML = faqData.map((f, i) => `
+    <div class="list-item ${f.visible ? '' : 'list-item-hidden'}">
+      <div class="list-item-order">${i + 1}</div>
+      <div class="list-item-body">
+        <div class="list-item-title">${esc(f.question)}</div>
+        <div class="list-item-sub">${esc(f.answer)}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="move-btn" title="Вверх" onclick="moveFaq(${f.id},-1)" ${i===0?'disabled':''}>↑</button>
+        <button class="move-btn" title="Вниз" onclick="moveFaq(${f.id},1)" ${i===faqData.length-1?'disabled':''}>↓</button>
+        <button class="btn btn-outline btn-sm" onclick="openFaqModal(${f.id})">Ред.</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteFaq(${f.id})">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openFaqModal(id) {
+  const f = id ? faqData.find(x => x.id === id) : null;
+  openModal(`
+    <h2>${f ? 'Редактировать' : 'Добавить'} вопрос</h2>
+    <div class="form-group"><label>Вопрос</label><input type="text" id="m_faq_q" value="${esc(f?.question || '')}" /></div>
+    <div class="form-group"><label>Ответ</label><textarea id="m_faq_a" rows="4">${esc(f?.answer || '')}</textarea></div>
+    <label class="checkbox-label"><input type="checkbox" id="m_faq_visible" ${f?.visible !== false ? 'checked' : ''} /> Показывать на сайте</label>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-primary" onclick="saveFaq(${id || 'null'})">Сохранить</button>
+    </div>
+  `);
+}
+
+async function saveFaq(id) {
+  const obj = {
+    question: document.getElementById('m_faq_q').value.trim(),
+    answer:   document.getElementById('m_faq_a').value.trim(),
+    visible:  document.getElementById('m_faq_visible').checked,
+  };
+  if (!obj.question) return showToast('Введите вопрос', 'error');
+
+  if (id) {
+    await supabase.from('faq').update(obj).eq('id', id);
+  } else {
+    obj.sort_order = faqData.length + 1;
+    await supabase.from('faq').insert(obj);
+  }
+  closeModal();
+  showToast('Вопрос сохранён');
+  loadFaq();
+}
+
+async function deleteFaq(id) {
+  if (!confirm('Удалить вопрос?')) return;
+  await supabase.from('faq').delete().eq('id', id);
+  showToast('Вопрос удалён');
+  loadFaq();
+}
+
+async function moveFaq(id, dir) {
+  const idx = faqData.findIndex(f => f.id === id);
+  const swapIdx = idx + dir;
+  if (swapIdx < 0 || swapIdx >= faqData.length) return;
+  const a = faqData[idx], b = faqData[swapIdx];
+  await supabase.from('faq').update({ sort_order: b.sort_order }).eq('id', a.id);
+  await supabase.from('faq').update({ sort_order: a.sort_order }).eq('id', b.id);
+  loadFaq();
+}
+
+// ════════════════════════════════════════
+// PORTFOLIO CRUD
+// ════════════════════════════════════════
+let portfolioData = [];
+
+async function loadPortfolio() {
+  const { data } = await supabase.from('portfolio').select('*').order('sort_order');
+  portfolioData = data || [];
+  renderPortfolio();
+}
+
+function renderPortfolio() {
+  const el = document.getElementById('portfolioList');
+  if (!portfolioData.length) { el.innerHTML = '<p style="color:var(--sub2);font-size:0.85rem;">Проектов пока нет</p>'; return; }
+  el.innerHTML = portfolioData.map((p, i) => `
+    <div class="list-item ${p.visible ? '' : 'list-item-hidden'}">
+      <div class="list-item-order">${i + 1}</div>
+      <div class="list-item-body">
+        <div class="list-item-title">${esc(p.title)}</div>
+        <div class="list-item-sub">${esc(p.stack)} · ${esc(p.result)}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="move-btn" title="Вверх" onclick="movePortfolio(${p.id},-1)" ${i===0?'disabled':''}>↑</button>
+        <button class="move-btn" title="Вниз" onclick="movePortfolio(${p.id},1)" ${i===portfolioData.length-1?'disabled':''}>↓</button>
+        <button class="btn btn-outline btn-sm" onclick="openPortfolioModal(${p.id})">Ред.</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePortfolio(${p.id})">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openPortfolioModal(id) {
+  const p = id ? portfolioData.find(x => x.id === id) : null;
+  openModal(`
+    <h2>${p ? 'Редактировать' : 'Добавить'} проект</h2>
+    <div class="form-group"><label>Название</label><input type="text" id="m_port_title" value="${esc(p?.title || '')}" /></div>
+    <div class="form-group"><label>Стек</label><input type="text" id="m_port_stack" value="${esc(p?.stack || '')}" /></div>
+    <div class="form-group"><label>Результат</label><input type="text" id="m_port_result" value="${esc(p?.result || '')}" /></div>
+    <div class="form-group"><label>URL картинки</label><input type="text" id="m_port_img" value="${esc(p?.image_url || '')}" /><div class="form-hint">Оставьте пустым — покажет заглушку</div></div>
+    <label class="checkbox-label"><input type="checkbox" id="m_port_visible" ${p?.visible !== false ? 'checked' : ''} /> Показывать на сайте</label>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-primary" onclick="savePortfolio(${id || 'null'})">Сохранить</button>
+    </div>
+  `);
+}
+
+async function savePortfolio(id) {
+  const obj = {
+    title:     document.getElementById('m_port_title').value.trim(),
+    stack:     document.getElementById('m_port_stack').value.trim(),
+    result:    document.getElementById('m_port_result').value.trim(),
+    image_url: document.getElementById('m_port_img').value.trim(),
+    visible:   document.getElementById('m_port_visible').checked,
+  };
+  if (!obj.title) return showToast('Введите название', 'error');
+
+  if (id) {
+    await supabase.from('portfolio').update(obj).eq('id', id);
+  } else {
+    obj.sort_order = portfolioData.length + 1;
+    await supabase.from('portfolio').insert(obj);
+  }
+  closeModal();
+  showToast('Проект сохранён');
+  loadPortfolio();
+}
+
+async function deletePortfolio(id) {
+  if (!confirm('Удалить проект?')) return;
+  await supabase.from('portfolio').delete().eq('id', id);
+  showToast('Проект удалён');
+  loadPortfolio();
+}
+
+async function movePortfolio(id, dir) {
+  const idx = portfolioData.findIndex(p => p.id === id);
+  const swapIdx = idx + dir;
+  if (swapIdx < 0 || swapIdx >= portfolioData.length) return;
+  const a = portfolioData[idx], b = portfolioData[swapIdx];
+  await supabase.from('portfolio').update({ sort_order: b.sort_order }).eq('id', a.id);
+  await supabase.from('portfolio').update({ sort_order: a.sort_order }).eq('id', b.id);
+  loadPortfolio();
+}
+
+// ════════════════════════════════════════
+// REVIEWS CRUD
+// ════════════════════════════════════════
+let reviewsData = [];
+
+async function loadReviews() {
+  const { data } = await supabase.from('reviews').select('*').order('sort_order');
+  reviewsData = data || [];
+  renderReviews();
+}
+
+function renderReviews() {
+  const el = document.getElementById('reviewsList');
+  if (!reviewsData.length) { el.innerHTML = '<p style="color:var(--sub2);font-size:0.85rem;">Отзывов пока нет</p>'; return; }
+  el.innerHTML = reviewsData.map((r, i) => `
+    <div class="list-item ${r.visible ? '' : 'list-item-hidden'}">
+      <div class="list-item-order" style="background:linear-gradient(135deg,var(--accent),#8B5CF6);color:#fff;border-radius:50%;font-size:0.85rem;">${esc(r.avatar_letter)}</div>
+      <div class="list-item-body">
+        <div class="list-item-title">${esc(r.name)}</div>
+        <div class="list-item-sub">${esc(r.role)} — ${esc(r.text)}</div>
+      </div>
+      <div class="list-item-actions">
+        <button class="move-btn" title="Вверх" onclick="moveReview(${r.id},-1)" ${i===0?'disabled':''}>↑</button>
+        <button class="move-btn" title="Вниз" onclick="moveReview(${r.id},1)" ${i===reviewsData.length-1?'disabled':''}>↓</button>
+        <button class="btn btn-outline btn-sm" onclick="openReviewModal(${r.id})">Ред.</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteReview(${r.id})">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openReviewModal(id) {
+  const r = id ? reviewsData.find(x => x.id === id) : null;
+  openModal(`
+    <h2>${r ? 'Редактировать' : 'Добавить'} отзыв</h2>
+    <div class="form-row">
+      <div class="form-group"><label>Имя</label><input type="text" id="m_rev_name" value="${esc(r?.name || '')}" /></div>
+      <div class="form-group"><label>Буква аватара</label><input type="text" id="m_rev_letter" maxlength="1" value="${esc(r?.avatar_letter || '')}" /></div>
+    </div>
+    <div class="form-group"><label>Компания / сфера</label><input type="text" id="m_rev_role" value="${esc(r?.role || '')}" /></div>
+    <div class="form-group"><label>Текст отзыва</label><textarea id="m_rev_text" rows="4">${esc(r?.text || '')}</textarea></div>
+    <label class="checkbox-label"><input type="checkbox" id="m_rev_visible" ${r?.visible !== false ? 'checked' : ''} /> Показывать на сайте</label>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+      <button class="btn btn-primary" onclick="saveReview(${id || 'null'})">Сохранить</button>
+    </div>
+  `);
+}
+
+async function saveReview(id) {
+  const obj = {
+    name:          document.getElementById('m_rev_name').value.trim(),
+    avatar_letter: document.getElementById('m_rev_letter').value.trim().charAt(0) || 'A',
+    role:          document.getElementById('m_rev_role').value.trim(),
+    text:          document.getElementById('m_rev_text').value.trim(),
+    visible:       document.getElementById('m_rev_visible').checked,
+  };
+  if (!obj.name) return showToast('Введите имя', 'error');
+
+  if (id) {
+    await supabase.from('reviews').update(obj).eq('id', id);
+  } else {
+    obj.sort_order = reviewsData.length + 1;
+    await supabase.from('reviews').insert(obj);
+  }
+  closeModal();
+  showToast('Отзыв сохранён');
+  loadReviews();
+}
+
+async function deleteReview(id) {
+  if (!confirm('Удалить отзыв?')) return;
+  await supabase.from('reviews').delete().eq('id', id);
+  showToast('Отзыв удалён');
+  loadReviews();
+}
+
+async function moveReview(id, dir) {
+  const idx = reviewsData.findIndex(r => r.id === id);
+  const swapIdx = idx + dir;
+  if (swapIdx < 0 || swapIdx >= reviewsData.length) return;
+  const a = reviewsData[idx], b = reviewsData[swapIdx];
+  await supabase.from('reviews').update({ sort_order: b.sort_order }).eq('id', a.id);
+  await supabase.from('reviews').update({ sort_order: a.sort_order }).eq('id', b.id);
+  loadReviews();
+}
+
+// ─── Utils ───
+function esc(str) {
+  if (!str) return '';
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+// ─── Init ───
+checkSession();
+</script>
+</body>
+</html>
