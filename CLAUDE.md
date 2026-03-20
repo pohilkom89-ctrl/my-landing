@@ -11,7 +11,7 @@
 - Иконки только SVG встроенные в HTML
 - CSS и JS внутри HTML-файлов
 - Внешние CDN разрешены (Supabase JS SDK)
-- **Supabase** — бэкенд (БД, авторизация, API). Конфиг: `YOUR_SUPABASE_URL` / `YOUR_SUPABASE_ANON_KEY`
+- **Supabase** — бэкенд (БД, авторизация, API). Проект: `pizugvvcpjrulhvrsnyo.supabase.co`
 - SQL-схема: `supabase-setup.sql`
 
 ---
@@ -30,7 +30,7 @@
 | Радиус | `16px` |
 
 - Светлая тема
-- Шрифт: Segoe UI / system-ui
+- Шрифт: Inter (body) / Manrope (заголовки) — Google Fonts
 - Mobile-first адаптация обязательна
 
 ---
@@ -39,8 +39,8 @@
 
 - **Имя:** Михаил Похилько, 36 лет
 - **Telegram:** @MuXauJl89
-- **Фото:** `31f72683-3347-439c-9878-fb63ff9b3ba9.png`
-- **Заголовок:** "Сделаю Telegram-бота, сайт или ИИ-помощника — под ключ"
+- **Фото:** `photo-hero.png`
+- **Заголовок:** "Один разработчик — Telegram-бот, сайт или MVP под ключ"
 
 ---
 
@@ -68,7 +68,7 @@
 ```
 admin.html ──(write)──→ Supabase ←──(read)── landing.html
                             ↑
-                     (план) Telegram-бот
+                       Telegram-бот (следующий шаг)
 ```
 
 - `landing.html` — лендинг, подтягивает данные из Supabase на загрузке, fallback на статику
@@ -77,10 +77,11 @@ admin.html ──(write)──→ Supabase ←──(read)── landing.html
 
 ## Следующие шаги проекта
 
-- [x] Пуш на GitHub — готово, репо `pohilkom89-ctrl/my-landing`
+- [x] Пуш на GitHub — репо `pohilkom89-ctrl/my-landing`
 - [x] FAQ секция — аккордеон с 6 вопросами
 - [x] Админ-панель + Supabase — управление всем контентом
-- [ ] **Подключить Supabase** — получить Access Token от пользователя, создать проект через API, запустить SQL, вставить ключи
-- [ ] **Telegram-бот** для приёма заявок (aiogram + Supabase)
-- [ ] Наполнить портфолио и отзывы реальным контентом
+- [x] **Supabase подключён** — проект создан, SQL запущен, ключи вставлены в оба HTML
+- [x] Лендинг обновлён — Inter/Manrope, OG-теги, новое фото, Supabase dynamic load
+- [ ] **Telegram-бот** для приёма заявок (aiogram 3 + Supabase) — следующий шаг
+- [ ] Наполнить портфолио и отзывы реальным контентом (через админку)
 - [ ] Запустить Telegram-канал для трафика
