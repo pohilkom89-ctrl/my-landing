@@ -198,7 +198,7 @@
       <input type="password" id="loginPass" placeholder="••••••••" />
     </div>
     <div id="loginError" style="color:var(--danger);font-size:0.82rem;margin-bottom:12px;display:none;"></div>
-    <button class="btn btn-primary btn-block" id="loginBtn">Войти</button>
+    <button class="btn btn-primary btn-block" id="loginBtn" onclick="handleLogin()">Войти</button>
   </div>
 </div>
 
@@ -320,12 +320,17 @@
 
 <script>
 // ════════════════════════════════════════
-// CONFIG — replace with your Supabase project values
+// CONFIG
 // ════════════════════════════════════════
-const SUPABASE_URL  = 'YOUR_SUPABASE_URL';
-const SUPABASE_KEY  = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL  = 'https://pizugvvcpjrulhvrsnyo.supabase.co';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpenVndnZjcGpydWxodnJzbnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5OTQ1ODcsImV4cCI6MjA4OTU3MDU4N30.w-V52rrLeOPYY4DSswJIVogxqADad3I08jpS_TUE_sU';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+if (!window.supabase) {
+  document.body.innerHTML = '<div style="padding:40px;font-family:sans-serif;color:red;font-size:1.1rem">Ошибка: не загрузился Supabase SDK. Проверьте интернет-соединение и перезагрузите страницу.</div>';
+  throw new Error('Supabase SDK not loaded');
+}
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ─── DOM refs ───
 const loginScreen = document.getElementById('loginScreen');
@@ -354,33 +359,46 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 // AUTH
 // ════════════════════════════════════════
 async function checkSession() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await sb.auth.getSession();
   if (session) {
     showApp(session.user);
   }
 }
 
-document.getElementById('loginBtn').addEventListener('click', async () => {
+async function handleLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass  = document.getElementById('loginPass').value;
   const errEl = document.getElementById('loginError');
+  const btn   = document.getElementById('loginBtn');
   errEl.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Вход...';
 
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
-  if (error) {
-    errEl.textContent = 'Неверный email или пароль';
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+      errEl.textContent = error.message;
+      errEl.style.display = 'block';
+    } else {
+      showApp(data.user);
+    }
+  } catch(e) {
+    errEl.textContent = 'Ошибка: ' + e.message;
     errEl.style.display = 'block';
-    return;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Войти';
   }
-  showApp(data.user);
-});
+}
+
+document.getElementById('loginBtn').addEventListener('click', handleLogin);
 
 document.getElementById('loginPass').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('loginBtn').click();
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
-  await supabase.auth.signOut();
+  await sb.auth.signOut();
   location.reload();
 });
 
@@ -413,7 +431,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 const settingsKeys = ['busy_pct','free_slots','slots_month','hero_title','hero_subtitle','about_text_1','about_text_2'];
 
 async function loadSettings() {
-  const { data } = await supabase.from('settings').select('*');
+  const { data } = await sb.from('settings').select('*');
   if (!data) return;
   data.forEach(row => {
     const el = document.getElementById('s_' + row.key);
@@ -428,7 +446,7 @@ document.getElementById('saveSettings').addEventListener('click', async () => {
   for (const key of settingsKeys) {
     const el = document.getElementById('s_' + key);
     if (!el) continue;
-    await supabase.from('settings').upsert({ key, value: el.value, updated_at: new Date().toISOString() });
+    await sb.from('settings').upsert({ key, value: el.value, updated_at: new Date().toISOString() });
   }
 
   btn.disabled = false; btn.textContent = 'Сохранить настройки';
@@ -441,7 +459,7 @@ document.getElementById('saveSettings').addEventListener('click', async () => {
 let servicesData = [];
 
 async function loadServices() {
-  const { data } = await supabase.from('services').select('*').order('sort_order');
+  const { data } = await sb.from('services').select('*').order('sort_order');
   servicesData = data || [];
   renderServices();
 }
@@ -503,10 +521,10 @@ async function saveService(id) {
   if (!obj.name) return showToast('Введите название', 'error');
 
   if (id) {
-    await supabase.from('services').update(obj).eq('id', id);
+    await sb.from('services').update(obj).eq('id', id);
   } else {
     obj.sort_order = servicesData.length + 1;
-    await supabase.from('services').insert(obj);
+    await sb.from('services').insert(obj);
   }
   closeModal();
   showToast('Услуга сохранена');
@@ -515,7 +533,7 @@ async function saveService(id) {
 
 async function deleteService(id) {
   if (!confirm('Удалить услугу?')) return;
-  await supabase.from('services').delete().eq('id', id);
+  await sb.from('services').delete().eq('id', id);
   showToast('Услуга удалена');
   loadServices();
 }
@@ -525,8 +543,8 @@ async function moveService(id, dir) {
   const swapIdx = idx + dir;
   if (swapIdx < 0 || swapIdx >= servicesData.length) return;
   const a = servicesData[idx], b = servicesData[swapIdx];
-  await supabase.from('services').update({ sort_order: b.sort_order }).eq('id', a.id);
-  await supabase.from('services').update({ sort_order: a.sort_order }).eq('id', b.id);
+  await sb.from('services').update({ sort_order: b.sort_order }).eq('id', a.id);
+  await sb.from('services').update({ sort_order: a.sort_order }).eq('id', b.id);
   loadServices();
 }
 
@@ -536,7 +554,7 @@ async function moveService(id, dir) {
 let faqData = [];
 
 async function loadFaq() {
-  const { data } = await supabase.from('faq').select('*').order('sort_order');
+  const { data } = await sb.from('faq').select('*').order('sort_order');
   faqData = data || [];
   renderFaq();
 }
@@ -584,10 +602,10 @@ async function saveFaq(id) {
   if (!obj.question) return showToast('Введите вопрос', 'error');
 
   if (id) {
-    await supabase.from('faq').update(obj).eq('id', id);
+    await sb.from('faq').update(obj).eq('id', id);
   } else {
     obj.sort_order = faqData.length + 1;
-    await supabase.from('faq').insert(obj);
+    await sb.from('faq').insert(obj);
   }
   closeModal();
   showToast('Вопрос сохранён');
@@ -596,7 +614,7 @@ async function saveFaq(id) {
 
 async function deleteFaq(id) {
   if (!confirm('Удалить вопрос?')) return;
-  await supabase.from('faq').delete().eq('id', id);
+  await sb.from('faq').delete().eq('id', id);
   showToast('Вопрос удалён');
   loadFaq();
 }
@@ -606,8 +624,8 @@ async function moveFaq(id, dir) {
   const swapIdx = idx + dir;
   if (swapIdx < 0 || swapIdx >= faqData.length) return;
   const a = faqData[idx], b = faqData[swapIdx];
-  await supabase.from('faq').update({ sort_order: b.sort_order }).eq('id', a.id);
-  await supabase.from('faq').update({ sort_order: a.sort_order }).eq('id', b.id);
+  await sb.from('faq').update({ sort_order: b.sort_order }).eq('id', a.id);
+  await sb.from('faq').update({ sort_order: a.sort_order }).eq('id', b.id);
   loadFaq();
 }
 
@@ -617,7 +635,7 @@ async function moveFaq(id, dir) {
 let portfolioData = [];
 
 async function loadPortfolio() {
-  const { data } = await supabase.from('portfolio').select('*').order('sort_order');
+  const { data } = await sb.from('portfolio').select('*').order('sort_order');
   portfolioData = data || [];
   renderPortfolio();
 }
@@ -669,10 +687,10 @@ async function savePortfolio(id) {
   if (!obj.title) return showToast('Введите название', 'error');
 
   if (id) {
-    await supabase.from('portfolio').update(obj).eq('id', id);
+    await sb.from('portfolio').update(obj).eq('id', id);
   } else {
     obj.sort_order = portfolioData.length + 1;
-    await supabase.from('portfolio').insert(obj);
+    await sb.from('portfolio').insert(obj);
   }
   closeModal();
   showToast('Проект сохранён');
@@ -681,7 +699,7 @@ async function savePortfolio(id) {
 
 async function deletePortfolio(id) {
   if (!confirm('Удалить проект?')) return;
-  await supabase.from('portfolio').delete().eq('id', id);
+  await sb.from('portfolio').delete().eq('id', id);
   showToast('Проект удалён');
   loadPortfolio();
 }
@@ -691,8 +709,8 @@ async function movePortfolio(id, dir) {
   const swapIdx = idx + dir;
   if (swapIdx < 0 || swapIdx >= portfolioData.length) return;
   const a = portfolioData[idx], b = portfolioData[swapIdx];
-  await supabase.from('portfolio').update({ sort_order: b.sort_order }).eq('id', a.id);
-  await supabase.from('portfolio').update({ sort_order: a.sort_order }).eq('id', b.id);
+  await sb.from('portfolio').update({ sort_order: b.sort_order }).eq('id', a.id);
+  await sb.from('portfolio').update({ sort_order: a.sort_order }).eq('id', b.id);
   loadPortfolio();
 }
 
@@ -702,7 +720,7 @@ async function movePortfolio(id, dir) {
 let reviewsData = [];
 
 async function loadReviews() {
-  const { data } = await supabase.from('reviews').select('*').order('sort_order');
+  const { data } = await sb.from('reviews').select('*').order('sort_order');
   reviewsData = data || [];
   renderReviews();
 }
@@ -756,10 +774,10 @@ async function saveReview(id) {
   if (!obj.name) return showToast('Введите имя', 'error');
 
   if (id) {
-    await supabase.from('reviews').update(obj).eq('id', id);
+    await sb.from('reviews').update(obj).eq('id', id);
   } else {
     obj.sort_order = reviewsData.length + 1;
-    await supabase.from('reviews').insert(obj);
+    await sb.from('reviews').insert(obj);
   }
   closeModal();
   showToast('Отзыв сохранён');
@@ -768,7 +786,7 @@ async function saveReview(id) {
 
 async function deleteReview(id) {
   if (!confirm('Удалить отзыв?')) return;
-  await supabase.from('reviews').delete().eq('id', id);
+  await sb.from('reviews').delete().eq('id', id);
   showToast('Отзыв удалён');
   loadReviews();
 }
@@ -778,8 +796,8 @@ async function moveReview(id, dir) {
   const swapIdx = idx + dir;
   if (swapIdx < 0 || swapIdx >= reviewsData.length) return;
   const a = reviewsData[idx], b = reviewsData[swapIdx];
-  await supabase.from('reviews').update({ sort_order: b.sort_order }).eq('id', a.id);
-  await supabase.from('reviews').update({ sort_order: a.sort_order }).eq('id', b.id);
+  await sb.from('reviews').update({ sort_order: b.sort_order }).eq('id', a.id);
+  await sb.from('reviews').update({ sort_order: a.sort_order }).eq('id', b.id);
   loadReviews();
 }
 
