@@ -82,6 +82,8 @@ admin.html ──(write)──→ Supabase ←──(read)── landing.html
 - [x] Админ-панель + Supabase — управление всем контентом
 - [x] **Supabase подключён** — проект создан, SQL запущен, ключи вставлены в оба HTML
 - [x] Лендинг обновлён — Inter/Manrope, OG-теги, новое фото, Supabase dynamic load
-- [ ] **Telegram-бот** для приёма заявок (aiogram 3 + Supabase) — следующий шаг
+- [x] **Telegram-бот + Mini App** — код готов, webapp на Vercel, Supabase leads таблица создана
+- [ ] **Деплой бота на Beget VPS** — инструкция в `deploy-beget.md`, нужен VPS (~150₽/мес)
 - [ ] Наполнить портфолио и отзывы реальным контентом (через админку)
+- [ ] Протестировать полный цикл: /start → Mini App → заявка → Supabase + уведомление
 - [ ] Запустить Telegram-канал для трафика
