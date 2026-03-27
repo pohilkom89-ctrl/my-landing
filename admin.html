@@ -220,6 +220,7 @@
     <button class="tab" data-tab="faq">FAQ</button>
     <button class="tab" data-tab="portfolio">Портфолио</button>
     <button class="tab" data-tab="reviews">Отзывы</button>
+    <button class="tab" data-tab="leads">Заявки</button>
   </div>
 
   <!-- ─── TAB: SETTINGS ─── -->
@@ -304,6 +305,15 @@
       <button class="btn btn-primary btn-sm" onclick="openReviewModal()">+ Добавить</button>
     </div>
     <div id="reviewsList"></div>
+  </div>
+
+  <!-- ─── TAB: LEADS ─── -->
+  <div class="content tab-content" id="tab-leads" style="display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h3 style="font-size:1rem;font-weight:700;">Заявки</h3>
+      <button class="btn btn-outline btn-sm" onclick="loadLeads()">↻ Обновить</button>
+    </div>
+    <div id="leadsList"></div>
   </div>
 </div>
 
@@ -411,6 +421,7 @@ function showApp(user) {
   loadFaq();
   loadPortfolio();
   loadReviews();
+  loadLeads();
 }
 
 // ════════════════════════════════════════
@@ -799,6 +810,66 @@ async function moveReview(id, dir) {
   await sb.from('reviews').update({ sort_order: b.sort_order }).eq('id', a.id);
   await sb.from('reviews').update({ sort_order: a.sort_order }).eq('id', b.id);
   loadReviews();
+}
+
+// ════════════════════════════════════════
+// LEADS
+let leadsData = [];
+
+async function loadLeads() {
+  const { data } = await sb.from('leads').select('*').order('created_at', { ascending: false });
+  leadsData = data || [];
+  renderLeads();
+}
+
+function renderLeads() {
+  const el = document.getElementById('leadsList');
+  if (!leadsData.length) { el.innerHTML = '<p style="color:var(--sub2);font-size:0.85rem;">Заявок пока нет</p>'; return; }
+  el.innerHTML = leadsData.map(l => {
+    const date = new Date(l.created_at).toLocaleString('ru-RU', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+    const statusColors = { new: 'var(--accent)', in_progress: '#F59E0B', done: 'var(--success)' };
+    const statusLabels = { new: 'Новая', in_progress: 'В работе', done: 'Готово' };
+    const color = statusColors[l.status] || 'var(--sub2)';
+    const label = statusLabels[l.status] || l.status;
+    return `
+      <div class="list-item" style="cursor:default;">
+        <div class="list-item-body" style="gap:4px;">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <strong style="font-size:0.9rem;">${esc(l.name || '—')}</strong>
+            <span style="font-size:0.75rem;color:${color};font-weight:700;background:${color}18;padding:2px 8px;border-radius:6px;">${label}</span>
+            <span style="font-size:0.75rem;color:var(--sub2);">${date}</span>
+          </div>
+          <div style="font-size:0.82rem;color:var(--sub);margin-top:4px;">
+            <b>Услуга:</b> ${esc(l.service || '—')} · <b>Бюджет:</b> ${esc(l.budget || '—')}
+          </div>
+          <div style="font-size:0.82rem;color:var(--sub2);margin-top:2px;">${esc(l.description || '—')}</div>
+          <div style="font-size:0.82rem;margin-top:4px;">
+            📱 ${esc(l.tg_username || '—')}${l.tg_id ? ' · tg_id: ' + l.tg_id : ''}
+          </div>
+        </div>
+        <div class="list-item-actions">
+          <select onchange="updateLeadStatus(${l.id}, this.value)" style="font-size:0.8rem;padding:4px 8px;border-radius:8px;border:1px solid rgba(0,0,0,0.12);">
+            <option value="new"${l.status==='new'?' selected':''}>Новая</option>
+            <option value="in_progress"${l.status==='in_progress'?' selected':''}>В работе</option>
+            <option value="done"${l.status==='done'?' selected':''}>Готово</option>
+          </select>
+          <button class="btn btn-danger btn-sm" onclick="deleteLead(${l.id})">✕</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function updateLeadStatus(id, status) {
+  await sb.from('leads').update({ status }).eq('id', id);
+  showToast('Статус обновлён');
+  loadLeads();
+}
+
+async function deleteLead(id) {
+  if (!confirm('Удалить заявку?')) return;
+  await sb.from('leads').delete().eq('id', id);
+  showToast('Заявка удалена');
+  loadLeads();
 }
 
 // ─── Utils ───

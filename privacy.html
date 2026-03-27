@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Политика конфиденциальности — Михаил Похилько</title>
+  <meta name="description" content="Политика обработки персональных данных Михаила Похилько в соответствии с ФЗ-152." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #F0F2FF; --bg2: #E8EAFF; --card: #FFFFFF;
+      --border: rgba(91,91,214,0.18); --text: #0A0E1C;
+      --sub: #374151; --sub2: #6B7280;
+      --accent: #5B5BD6; --accent-h: #4747C2;
+      --accent-soft: rgba(91,91,214,0.09);
+      --r: 16px;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-head: 'Manrope', 'Inter', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.7; }
+
+    header {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      box-shadow: 0 1px 16px rgba(0,0,0,0.06);
+    }
+    .hdr { display: flex; align-items: center; justify-content: space-between; height: 64px; max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+    .hdr-name { font-family: var(--font-head); font-size: 0.93rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .hdr-back {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 18px; border-radius: 12px;
+      background: var(--accent); color: #fff; text-decoration: none;
+      font-size: 0.875rem; font-weight: 600;
+      transition: background .22s;
+    }
+    .hdr-back:hover { background: var(--accent-h); }
+
+    .wrap { max-width: 780px; margin: 0 auto; padding: 0 40px; }
+
+    .page-title { padding: 64px 0 48px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+    .page-label {
+      display: inline-block; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-soft);
+      border-radius: 50px; padding: 5px 14px; margin-bottom: 18px;
+    }
+    .page-h1 { font-family: var(--font-head); font-size: clamp(1.8rem,4vw,2.6rem); font-weight: 800; line-height: 1.22; margin-bottom: 12px; }
+    .page-meta { font-size: 0.875rem; color: var(--sub2); }
+
+    .policy-body { padding-bottom: 80px; }
+    .ps {
+      background: var(--card); border: 1px solid rgba(0,0,0,0.09);
+      border-radius: var(--r); padding: 32px 36px; margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(91,91,214,0.07);
+    }
+    .ps h2 { font-family: var(--font-head); font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .ps-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--accent-soft); color: var(--accent);
+      font-size: 0.75rem; font-weight: 800; flex-shrink: 0;
+    }
+    .ps p { font-size: 0.9375rem; color: var(--sub); margin-bottom: 12px; }
+    .ps p:last-child { margin-bottom: 0; }
+    .ps ul { list-style: none; padding: 0; margin: 10px 0 12px; }
+    .ps ul li { font-size: 0.9375rem; color: var(--sub); padding: 5px 0 5px 22px; position: relative; }
+    .ps ul li::before { content: ''; position: absolute; left: 0; top: 13px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+    .ps a { color: var(--accent); text-decoration: none; }
+    .ps a:hover { text-decoration: underline; }
+    .ps-highlight {
+      background: var(--accent-soft); border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 14px 0;
+      font-size: 0.9rem; color: var(--sub);
+    }
+
+    footer { border-top: 1px solid rgba(0,0,0,0.06); padding: 36px 0 32px; background: var(--bg2); }
+    .foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+    .foot-copy { font-size: 0.75rem; color: var(--sub2); }
+
+    @media (max-width: 640px) {
+      .hdr, .wrap, .foot { padding-left: 20px; padding-right: 20px; }
+      .page-title { padding: 40px 0 32px; margin-bottom: 32px; }
+      .ps { padding: 22px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <a href="landing.html" class="hdr-name">Михаил Похилько</a>
+    <a href="landing.html" class="hdr-back">← На главную</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="page-title">
+    <span class="page-label">Правовой документ</span>
+    <h1 class="page-h1">Политика конфиденциальности</h1>
+    <p class="page-meta">Дата вступления в силу: 1 апреля 2026 г.</p>
+  </div>
+</div>
+
+<main class="wrap policy-body">
+
+  <section class="ps">
+    <h2><span class="ps-num">1</span> Общие положения</h2>
+    <p>Настоящая Политика определяет порядок сбора, хранения и обработки персональных данных пользователей сайта <strong>pohilko.dev</strong>.</p>
+    <p>Оператор персональных данных — самозанятый:</p>
+    <ul>
+      <li><strong>Ф.И.О.:</strong> Похилько Михаил</li>
+      <li><strong>Telegram:</strong> <a href="https://t.me/MuXauJl89" target="_blank" rel="noopener">@MuXauJl89</a></li>
+      <li><strong>Сайт:</strong> <a href="https://pohilko.dev">pohilko.dev</a></li>
+    </ul>
+    <p>Политика разработана в соответствии с Федеральным законом от 27.07.2006 № 152-ФЗ «О персональных данных».</p>
+    <p>Используя Сайт или оставляя заявку, вы подтверждаете согласие с условиями настоящей Политики.</p>
+  </section>
+
+  <section class="ps">
+    <h2><span class="ps-num">2</span> Состав собираемых данных</h2>
+    <ul>
+      <li>Имя (имя и/или фамилия)</li>
+      <li>Контактные данные: телефон и/или Telegram @username</li>
+      <li>Идентификатор Telegram (Telegram ID) — при обращении через бота</li>
+      <li>Описание проекта или задачи</li>
+    </ul>
+    <p>Сайт <strong>не использует</strong> файлы cookie, счётчики аналитики или пиксели отслеживания.</p>
+  </section>
+
+  <section class="ps">
+    <h2><span class="ps-num">3</span> Правовые основания обработки</h2>
+    <ul>
+      <li><strong>Согласие субъекта</strong> (ст. 9 ФЗ-152) — пользователь добровольно передаёт данные, оставляя заявку</li>
+      <li><strong>Исполнение договора</strong> (п. 5 ч. 1 ст. 6 ФЗ-152) — обработка необходима для заключения и исполнения договора</li>
+    </ul>
+    <div class="ps-highlight">Отправляя заявку, вы даёте согласие на обработку персональных данных в целях, описанных в разделе 4.</div>
+  </section>
+
+  <section class="ps">
+    <h2><span class="ps-num">4</span> Цели обработки</h2>
+    <ul>
+      <li>Обработка входящих заявок на разработку</li>
+      <li>Связь с клиентом для уточнения деталей проекта</li>
+      <li>Заключение и исполнение договора об оказании услуг</li>
+      <li>Выставление чека самозанятого</li>
+    </ul>
+    <p>Данные не используются для рекламы, не продаются и не передаются третьим лицам.</p>
+  </section>
+
+  <section class="ps">
+    <h2><span class="ps-num">5</span> Меры защиты</h2>
+    <ul>
+      <li>Данные хранятся на защищённой платформе с шифрованием TLS и AES-256</li>
+      <li>Доступ к базе ограничен политиками Row Level Security</li>
+      <li>Административная панель защищена авторизацией</li>
+    </ul>
+  </section>
+
+  <section class="ps">
+    <h2><span class="ps-num">6</span> Трансграничная передача данных</h2>
+    <p>Для хранения заявок используется облачная платформа <strong>Supabase</strong> (Supabase, Inc., США). Персональные данные могут храниться на серверах за пределами РФ.</p>
+    <div class="ps-highlight">В соответствии с ч. 3 ст. 12 ФЗ-152, оставляя заявку, вы выражаете информированное согласие на трансграничную передачу данных.</div>
+    <p>Политика конфиденциальности Supabase: <a href="https://supabase.com/privacy" target="_blank" rel="noopener">supabase.com/privacy</a>.</p>
+  </section>
+
+  <section class="ps">
+    <h2><span class="ps-num">7</span> Сроки хранения</h2>
+    <ul>
+      <li>Заявки без договора — не более <strong>6 месяцев</strong></li>
+      <li>Данные по исполненным договорам — <strong>5 лет</strong></li>
+    </ul>
+    <p>По истечении срока данные удаляются или обезличиваются.</p>
+  </section>
+
+  <section class="ps">
+    <h2><span class="ps-num">8</span> Права субъектов данных</h2>
+    <p>В соответствии с ФЗ-152 вы имеете право:</p>
+    <ul>
+      <li><strong>На доступ</strong> — узнать, какие данные обрабатываются</li>
+      <li><strong>На исправление</strong> — уточнить неточные данные</li>
+      <li><strong>На удаление</strong> — потребовать удаления данных</li>
+      <li><strong>На отзыв согласия</strong> — отозвать согласие на обработку</li>
+      <li><strong>На обжалование</strong> — обратиться в Роскомнадзор (<a href="https://rkn.gov.ru" target="_blank" rel="noopener">rkn.gov.ru</a>)</li>
+    </ul>
+    <p>Для обращения: <a href="https://t.me/MuXauJl89" target="_blank" rel="noopener">@MuXauJl89</a>. Срок рассмотрения — 30 дней.</p>
+  </section>
+
+  <section class="ps">
+    <h2><span class="ps-num">9</span> Контактная информация</h2>
+    <ul>
+      <li><strong>Telegram:</strong> <a href="https://t.me/MuXauJl89" target="_blank" rel="noopener">@MuXauJl89</a></li>
+      <li><strong>Сайт:</strong> <a href="https://pohilko.dev">pohilko.dev</a></li>
+    </ul>
+    <p>Оператор вправе изменять Политику. Актуальная версия: <a href="https://pohilko.dev/privacy.html">pohilko.dev/privacy.html</a>.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot">
+    <a href="landing.html" class="hdr-name">Михаил Похилько</a>
+    <div>
+      <span class="foot-copy">© 2025–2026 Михаил Похилько</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
