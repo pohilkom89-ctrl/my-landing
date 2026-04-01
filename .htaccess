@@ -1,11 +1,15 @@
-# ── HTTPS redirect ──
+# ── Rewrite engine ──
 RewriteEngine On
-RewriteCond %{HTTPS} !=on
-RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
-# ── www → non-www ──
+# ── www → non-www (first, to avoid double redirect) ──
 RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
 RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# ── HTTPS redirect (Beget: Apache behind nginx proxy) ──
+# Check both %{HTTPS} and X-Forwarded-Proto for proxy compatibility
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
 # ── Clean URL: / → landing.html ──
 DirectoryIndex landing.html
@@ -36,11 +40,13 @@ DirectoryIndex landing.html
   Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
 </IfModule>
 
-# ── Block sensitive files ──
-<FilesMatch "\.(env|sql|md|gitignore)$">
-  Order allow,deny
-  Deny from all
+# ── Block sensitive files (Apache 2.4 syntax) ──
+<FilesMatch "\.(env|sql|md|gitignore|log|bak)$">
+  Require all denied
 </FilesMatch>
+
+# ── Block .git directory ──
+RedirectMatch 404 /\.git
 
 # ── Disable directory listing ──
 Options -Indexes
