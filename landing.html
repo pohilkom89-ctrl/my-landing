@@ -1162,13 +1162,11 @@
   </a>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
   // ════════════════════════════════════════
-  // SUPABASE CONFIG — replace with your project values
+  // API CONFIG
   // ════════════════════════════════════════
-  const SUPABASE_URL = 'https://pizugvvcpjrulhvrsnyo.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBpenVndnZjcGpydWxodnJzbnlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5OTQ1ODcsImV4cCI6MjA4OTU3MDU4N30.w-V52rrLeOPYY4DSswJIVogxqADad3I08jpS_TUE_sU';
+  const API_BASE = '/api';
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { document.getElementById('mob').classList.remove('open'); document.querySelector('.burger').setAttribute('aria-expanded','false'); }
@@ -1223,33 +1221,27 @@
   if (statsBlock) statsObs.observe(statsBlock);
 
   // ════════════════════════════════════════
-  // DYNAMIC DATA FROM SUPABASE
+  // DYNAMIC DATA FROM PHP API
   // Falls back to static HTML if fetch fails
   // ════════════════════════════════════════
   (async function loadDynamic() {
-    if (SUPABASE_URL === 'YOUR_SUPABASE_URL') return; // not configured yet
     try {
-      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      const api = (path) => fetch(API_BASE + path).then(r => r.json());
 
       // ─── Settings ───
-      const { data: settings } = await sb.from('settings').select('*');
-      if (settings) {
-        const s = Object.fromEntries(settings.map(r => [r.key, r.value]));
-
-        // Badge
+      const s = await api('/settings.php');
+      if (s && !s.error) {
         const badge = document.getElementById('badgeEl');
         if (badge && s.busy_pct != null) {
           badge.innerHTML = '<span class="p-dot"></span> Занят на ' + s.busy_pct + '% · ' + s.free_slots + ' слота в ' + (s.slots_month || 'апреле');
         }
 
-        // Hero
         const h1 = document.querySelector('[data-key="hero_title"]');
         if (h1 && s.hero_title) h1.innerHTML = s.hero_title.replace(/(Telegram-бот|сайт|MVP|AI|ИИ)/gi, '<span class="hl">$1</span>');
 
         const sub = document.querySelector('[data-key="hero_subtitle"]');
         if (sub && s.hero_subtitle) sub.textContent = s.hero_subtitle;
 
-        // About
         const a1 = document.querySelector('[data-key="about_text_1"]');
         if (a1 && s.about_text_1) a1.textContent = s.about_text_1;
         const a2 = document.querySelector('[data-key="about_text_2"]');
@@ -1257,7 +1249,7 @@
       }
 
       // ─── Services ───
-      const { data: services } = await sb.from('services').select('*').eq('visible', true).order('sort_order');
+      const services = await api('/services.php?visible=true');
       if (services && services.length) {
         const svcGrid = document.querySelector('.svc-g');
         if (svcGrid) {
@@ -1284,7 +1276,7 @@
       }
 
       // ─── FAQ ───
-      const { data: faq } = await sb.from('faq').select('*').eq('visible', true).order('sort_order');
+      const faq = await api('/faq.php?visible=true');
       if (faq && faq.length) {
         const faqList = document.querySelector('.faq-list');
         if (faqList) {
@@ -1313,7 +1305,7 @@
       }
 
       // ─── Portfolio ───
-      const { data: portfolio } = await sb.from('portfolio').select('*').eq('visible', true).order('sort_order');
+      const portfolio = await api('/portfolio.php?visible=true');
       if (portfolio && portfolio.length) {
         const portGrid = document.querySelector('.port-g');
         if (portGrid) {
@@ -1329,7 +1321,7 @@
       }
 
       // ─── Reviews ───
-      const { data: reviews } = await sb.from('reviews').select('*').eq('visible', true).order('sort_order');
+      const reviews = await api('/reviews.php?visible=true');
       if (reviews && reviews.length) {
         const revGrid = document.querySelector('.rev-g');
         if (revGrid) {
@@ -1345,8 +1337,8 @@
       }
 
     } catch (e) {
-      // Supabase unavailable — static HTML stays as fallback
-      console.warn('Supabase fetch failed, using static content:', e);
+      // API unavailable — static HTML stays as fallback
+      console.warn('API fetch failed, using static content:', e);
     }
   })();
 
