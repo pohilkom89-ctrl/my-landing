@@ -66,14 +66,18 @@
 ## Архитектура
 
 ```
-admin.html ──(write)──→ Supabase ←──(read)── landing.html
-                            ↑
-                       Telegram-бот (следующий шаг)
+admin.html ──(fetch)──→ PHP API ←──(fetch)── landing.html
+                            ↓
+                     MySQL (Beget)
+                            ↓
+                  leads.php → Telegram API
 ```
 
-- `landing.html` — лендинг, подтягивает данные из Supabase на загрузке, fallback на статику
-- `admin.html` — админ-панель с авторизацией, CRUD для всех секций
-- `supabase-setup.sql` — таблицы: settings, services, faq, portfolio, reviews + RLS
+- `landing.html` — лендинг, подтягивает данные из PHP API (`/api/*.php`), fallback на статику
+- `admin.html` — админ-панель, PHP-сессии для авторизации, CRUD через fetch к API
+- `api/` — PHP API: config.php, auth.php, settings.php, services.php, faq.php, portfolio.php, reviews.php, leads.php
+- `mysql-schema.sql` — таблицы: settings, services, faq, portfolio, reviews, leads, admins
+- **Хостинг:** Beget shared (PHP 8.1 + MySQL 8.0), домен mpohilko.ru
 
 ## Следующие шаги проекта
 
@@ -88,13 +92,14 @@ admin.html ──(write)──→ Supabase ←──(read)── landing.html
 - [x] **Админка: вкладка Заявки** — просмотр, статусы (новая/в работе/готово), удаление
 - [x] **Код-ревью бота** — XSS-защита, singleton Supabase, параллельные запросы, валидация
 - [x] **Деплой на Beget** — shared-хостинг, файлы залиты по FTP, .htaccess, WebP, robots/sitemap
-- [x] **Домен mpohilko.ru** — зарегистрирован, SSL (Let's Encrypt) запрошен
+- [x] **Домен mpohilko.ru** — зарегистрирован, привязан, SSL Let's Encrypt активен
 - [x] **CTA → Telegram + Max** — все кнопки ведут на личные аккаунты (t.me/MuXauJl89 + max.ru)
-- [ ] **SSL активировать** — дождаться выпуска Let's Encrypt, залить .htaccess с HTTPS-редиректом
-- [ ] **Привязать mpohilko.ru к сайту** — в панели Beget создать сайт mpohilko.ru, перенести файлы
-- [ ] **Запустить pg_net триггер** — `supabase-notify-trigger.sql` (вставить BOT_TOKEN и CHAT_ID, выполнить в Supabase SQL Editor)
-- [ ] **Деплой бота на Beget VPS** — нужен VPS (~150₽/мес)
-- [ ] **152-ФЗ полный** — перенести первичное хранение ПД на российский хостинг, уведомить Роскомнадзор
+- [x] **SSL + HTTPS-редирект** — Let's Encrypt, .htaccess с X-Forwarded-Proto (Beget nginx proxy)
+- [x] **Миграция Supabase → PHP+MySQL** — 8 PHP API файлов, 7 MySQL таблиц, 38 вызовов переписаны
+- [x] **152-ФЗ: данные в РФ** — все ПД хранятся на Beget (российский хостинг)
+- [x] **Telegram-уведомления** — leads.php отправляет через curl при новой заявке
+- [ ] **152-ФЗ доработка** — уведомить Роскомнадзор, доработать политику (8 пробелов из аудита VK)
 - [ ] Наполнить портфолио и отзывы реальным контентом (через админку)
-- [ ] Протестировать полный цикл: лендинг → Telegram/Max → заявка
+- [ ] Протестировать полный цикл: лендинг → Telegram/Max → заявка → уведомление
 - [ ] Запустить Telegram-канал для трафика
+- [ ] Удалить Supabase проект (больше не используется)
